@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Tests / coverage
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Alembic generated versions (keep template + hand-written migrations)
+# alembic/versions/  ← keep these in the image so migrations run correctly
+
+# Git
+.git/
+.gitignore
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Secrets / local config
+.env
+*.env.local
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore

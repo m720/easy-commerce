@@ -1,0 +1,122 @@
+# Ecommerce Platform
+
+[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)  
+[![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)  
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  
+
+A full-stack, production-ready e-commerce platform built with FastAPI and React. Features a complete shopping experience for customers and a comprehensive admin dashboard with analytics.
+
+## 🏗️ Architecture
+
+```
+ecommerce/
+├── shared-docs/              # Shared documentation between packages
+│   ├── API_DOCS.md
+│   └── ARCHITECTURE.md
+├── .github/
+│   └── workflows/            # CI/CD pipelines
+│       ├── ci.yml
+│       └── lint.yml
+├── packages/
+│   ├── api/                 # FastAPI backend
+│   │   ├── app/
+│   │   ├── tests/
+│   │   ├── alembic/
+│   │   ├── seed.py
+│   │   └── [other backend files]
+│   └── web/                # React + TypeScript frontend
+│       ├── src/
+│       ├── public/
+│       └── [other frontend files]
+```
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend | FastAPI 0.115, Python 3.12, SQLAlchemy 2.0 |
+| Database | PostgreSQL 16, Alembic migrations |
+| Auth | JWT (python-jose), Bcrypt |
+| File Storage | AWS S3 with pre-signed URLs |
+| Email | SMTP via Python `emails` |
+| Frontend | React 19, TypeScript 5.9, Vite 7 |
+| Styling | Tailwind CSS 4, Lucide React |
+| State | Zustand 5, TanStack React Query 5 |
+
+## 🌟 Features
+
+### Customer Features
+- Product browsing with filters (search, category, tag, price)
+- Shopping cart with persistent storage
+- Checkout flows with address selection and coupon codes
+- Order history, tracking, and cancellation
+- Wishlist management
+- User reviews with admin moderation
+
+### Admin Dashboard
+- Product/Coupon/User/Category management
+- Revenue analytics and top product reports
+- Low-stock alerts
+- CSV export functionality
+- Return request approval workflow
+
+## 📦 Quick Start
+
+### Prerequisites
+- Python 3.12+
+- Node.js 18+
+- Docker & Docker Compose (recommended) or PostgreSQL 16
+
+### Setup
+
+```bash
+# Clone and navigate to project
+cd ecommerce
+
+# Backend setup (Option A: Docker)
+cd packages/api
+cp .env.example .env
+docker-compose up
+
+# Seed database on a separate terminal
+docker-compose exec api python seed.py
+
+# Frontend setup
+cd ../web
+npm install
+npm run dev
+```
+
+### API Endpoints
+- Swagger UI: http://localhost:8000/docs
+- API Base URL: http://localhost:8000/api/v1
+
+## 📖 Documentation
+
+See [API Reference](packages/api/docs/API_REFERENCE.md) for complete endpoint documentation.
+
+## 🔐 Environment Variables
+
+Configure `.env`:
+```bash
+DATABASE_URL=postgresql://postgres:password@localhost:5432/ecommerce
+SECRET_KEY=your-secret-key-change-in-production
+AWS_ACCESS_KEY_ID=your-access-key
+# See packages/api/.env.example for all options
+```
+
+## 🧪 Testing
+
+```bash
+# Backend tests
+cd packages/api
+pytest
+
+# Frontend tests
+cd ../web
+npm run test
+```
+
+## 📄 License
+
+MIT
