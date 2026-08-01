@@ -28,6 +28,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import bcrypt as _bcrypt
 from sqlalchemy import null, text
+from sqlalchemy.engine import make_url
 
 from app.config import settings
 from app.database.base import SessionLocal
@@ -84,6 +85,17 @@ def days_ago(days: float) -> datetime:
 
 def image_url(slug: str, index: int) -> str:
     return f"{settings.PUBLIC_BASE_URL.rstrip('/')}/static/products/{slug}-{index}.svg"
+
+
+def target_database() -> str:
+    """Host and database name being seeded, with the password stripped.
+
+    Worth printing: running this on the host seeds localhost, while the API
+    under docker-compose talks to the `db` service. Seeding the wrong one of
+    the two is the usual reason a freshly seeded dashboard comes up empty.
+    """
+    url = make_url(settings.DATABASE_URL)
+    return f"{url.username}@{url.host}:{url.port or 5432}/{url.database}"
 
 
 # ── Reference data ─────────────────────────────────────────────────────────
@@ -431,6 +443,7 @@ def _wipe(db) -> None:
 def seed(assume_yes: bool = False) -> None:
     db = SessionLocal()
     try:
+        print(f"Seeding {target_database()}")
         existing = _existing_row_count(db)
         if existing and not assume_yes and sys.stdin.isatty():
             print(f"The target database already holds {existing} rows across the seeded tables.")
@@ -746,7 +759,7 @@ def seed(assume_yes: bool = False) -> None:
         for order in orders:
             status_counts[order.status.value] = status_counts.get(order.status.value, 0) + 1
 
-        print("Database seeded successfully.\n")
+        print(f"Database seeded successfully: {target_database()}\n")
         print(f"  Users:      {len(USERS)} (admin@example.com / admin1234, everyone else / password123)")
         print(f"  Addresses:  {sum(len(v) for v in ADDRESSES.values())}")
         print(f"  Categories: {len(CATEGORIES)}    Tags: {len(TAGS)}")
