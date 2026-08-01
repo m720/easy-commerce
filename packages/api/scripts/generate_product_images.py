@@ -316,6 +316,20 @@ def jar(p: Dict[str, str]) -> str:
   </g>"""
 
 
+def lamp(p: Dict[str, str]) -> str:
+    return f"""  <g>
+    <ellipse cx="300" cy="606" rx="118" ry="28" fill="{p['body']}"/>
+    <rect x="286" y="352" width="28" height="248" rx="14" fill="{p['body']}"/>
+    <path d="M300 360 l176 -74" fill="none" stroke="{p['body']}" stroke-width="26" stroke-linecap="round"/>
+    <circle cx="300" cy="360" r="20" fill="{p['dark']}" opacity="0.55"/>
+    <g transform="rotate(28 500 300)">
+      <path d="M456 254 h88 l40 96 h-168 z" fill="{p['body']}"/>
+      <ellipse cx="500" cy="350" rx="84" ry="16" fill="{p['accent']}" opacity="0.9"/>
+    </g>
+    <ellipse cx="548" cy="432" rx="122" ry="62" fill="{p['accent']}" opacity="0.14"/>
+  </g>"""
+
+
 def brushes(p: Dict[str, str]) -> str:
     return f"""  <g>
     <g transform="rotate(-12 340 400)">
@@ -354,6 +368,7 @@ SHAPES: Dict[str, Callable[[Dict[str, str]], str]] = {
     "mister": mister,
     "jar": jar,
     "brushes": brushes,
+    "lamp": lamp,
 }
 
 # ── Catalogue → artwork mapping ────────────────────────────────────────────
@@ -383,6 +398,7 @@ CATALOGUE: List[tuple] = [
     ("rosewater-hydrating-mist", "mister", 2),
     ("clay-purifying-mask", "jar", 2),
     ("bamboo-bristle-brush-set", "brushes", 2),
+    ("aurora-desk-lamp", "lamp", 2),
 ]
 
 

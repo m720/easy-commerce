@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" role="img">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#e6ece9"/>
+      <stop offset="100%" stop-color="#c9d5d1"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="floor" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#171e19" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#171e19" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <rect width="800" height="800" fill="url(#glow)"/>
+  <circle cx="180" cy="640" r="130" fill="#ffffff" opacity="0.18"/>
+  <ellipse cx="400" cy="648" rx="215" ry="42" fill="url(#floor)"/>
+  <g transform="translate(400 400) rotate(0) scale(1.0) translate(-400 -400)">
+  <g>
+    <ellipse cx="300" cy="606" rx="118" ry="28" fill="#3d4a52"/>
+    <rect x="286" y="352" width="28" height="248" rx="14" fill="#3d4a52"/>
+    <path d="M300 360 l176 -74" fill="none" stroke="#3d4a52" stroke-width="26" stroke-linecap="round"/>
+    <circle cx="300" cy="360" r="20" fill="#171e19" opacity="0.55"/>
+    <g transform="rotate(28 500 300)">
+      <path d="M456 254 h88 l40 96 h-168 z" fill="#3d4a52"/>
+      <ellipse cx="500" cy="350" rx="84" ry="16" fill="#e0a458" opacity="0.9"/>
+    </g>
+    <ellipse cx="548" cy="432" rx="122" ry="62" fill="#e0a458" opacity="0.14"/>
+  </g>
+  </g>
+</svg>

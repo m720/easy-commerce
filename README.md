@@ -109,6 +109,14 @@ python seed.py --yes    # non-interactive
 Seeding is destructive and idempotent: it truncates the tables above and rebuilds
 them from a fixed random seed, so repeat runs give identical data.
 
+It generates 64 orders with a guaranteed spread across all six statuses, and
+deliberately covers the awkward states as well as the happy path — an order with
+no account attached, an order with no address snapshot, a line item whose variant
+was since deleted, products with no category / photos / description / variants, an
+empty category, an unused tag, an empty cart and wishlist, a deactivated user, an
+unlabelled address, and coupons that are expired, retired and fully redeemed. The
+script prints the status breakdown and the covered edge cases when it finishes.
+
 | Account | Password | Role |
 |---------|----------|------|
 | `admin@example.com` | `admin1234` | admin |

@@ -27,7 +27,7 @@ from decimal import Decimal
 sys.path.insert(0, os.path.dirname(__file__))
 
 import bcrypt as _bcrypt
-from sqlalchemy import text
+from sqlalchemy import null, text
 
 from app.config import settings
 from app.database.base import SessionLocal
@@ -95,6 +95,9 @@ CATEGORIES = [
     ("Books", "books", "Fiction, reference and design titles."),
     ("Sports & Outdoors", "sports-outdoors", "Packs, mats and trail equipment."),
     ("Beauty", "beauty", "Skincare and everyday grooming tools."),
+    # Description omitted and no products yet: an empty category the admin has
+    # created but not stocked.
+    ("Gifts & Cards", "gifts-cards", None),
 ]
 
 TAGS = [
@@ -106,11 +109,13 @@ TAGS = [
     ("Bestseller", "bestseller"),
     ("Limited Edition", "limited-edition"),
     ("Clearance", "clearance"),
+    ("Back in Stock", "back-in-stock"),  # deliberately unused
 ]
 
 USERS = [
     # email, full name, role, password, active, account age in days
     ("admin@example.com", "Admin User", UserRole.admin, "admin1234", True, 400),
+    ("ops@example.com", "Priya Raman", UserRole.admin, "admin1234", True, 220),
     ("alice@example.com", "Alice Smith", UserRole.user, "password123", True, 365),
     ("bob@example.com", "Bob Jones", UserRole.user, "password123", True, 310),
     ("carla@example.com", "Carla Nguyen", UserRole.user, "password123", True, 268),
@@ -126,6 +131,10 @@ USERS = [
 ADDRESSES = {
     "admin@example.com": [
         ("Office", "1 Commerce Way", "Austin", "TX", "USA", "78701", True),
+    ],
+    "ops@example.com": [
+        # Unlabelled address — the label is optional in the schema and the UI.
+        (None, "88 Warehouse Row", "Reno", "NV", "USA", "89501", True),
     ],
     "alice@example.com": [
         ("Home", "742 Evergreen Terrace", "Portland", "OR", "USA", "97205", True),
@@ -159,7 +168,10 @@ ADDRESSES = {
 }
 
 # slug, name, category slug, tag slugs, featured, active, base price, image count,
-# description, variants [(name, sku, price, stock)]
+# description, variants [(name, sku, price, stock[, low stock threshold])]
+#
+# A category slug of None, a description of None, an image count of 0 and an
+# empty variant list are all valid and deliberately exercised below.
 PRODUCTS = [
     (
         "probook-laptop-15", "ProBook Laptop 15", "electronics",
@@ -167,7 +179,7 @@ PRODUCTS = [
         "A 15-inch aluminium notebook with an all-day battery, a colour-accurate display and enough headroom for builds, edits and everything in between.",
         [("8GB / 256GB", "LAPTOP-8-256", "799.99", 20),
          ("16GB / 512GB", "LAPTOP-16-512", "999.99", 15),
-         ("32GB / 1TB", "LAPTOP-32-1T", "1399.99", 4)],
+         ("32GB / 1TB", "LAPTOP-32-1T", "1399.99", 4, 3)],
     ),
     (
         "soundmax-wireless-headphones", "SoundMax Wireless Headphones", "electronics",
@@ -197,7 +209,7 @@ PRODUCTS = [
         ["eco-friendly", "new-arrival"], True, True, "24.99", 3,
         "A midweight tee cut from 100% organic combed cotton, pre-shrunk so it keeps its shape past the first wash.",
         [("White / S", "TS-W-S", "24.99", 100),
-         ("White / M", "TS-W-M", "24.99", 100),
+         ("White / M", "TS-W-M", "24.99", 100, 25),
          ("White / L", "TS-W-L", "24.99", 80),
          ("Black / M", "TS-B-M", "24.99", 90),
          ("Sage / L", "TS-S-L", "26.99", 35)],
@@ -224,7 +236,7 @@ PRODUCTS = [
         ["sale", "popular"], False, True, "69.90", 3,
         "Vulcanised rubber sole, organic canvas upper and a padded collar that skips the break-in period.",
         [("US 8", "SN-8", "69.90", 24),
-         ("US 9", "SN-9", "69.90", 31),
+         ("US 9", "SN-9", "69.90", 31, 12),
          ("US 10", "SN-10", "69.90", 28),
          ("US 11", "SN-11", "69.90", 12)],
     ),
@@ -232,7 +244,7 @@ PRODUCTS = [
         "barista-pro-espresso-machine", "Barista Pro Espresso Machine", "home-kitchen",
         ["premium", "bestseller"], True, True, "549.00", 3,
         "A 15-bar pump, PID temperature control and a built-in conical grinder — cafe shots without the cafe queue.",
-        [("Stainless Steel", "ESP-SS", "549.00", 10),
+        [("Stainless Steel", "ESP-SS", "549.00", 10, 10),
          ("Matte Black", "ESP-MB", "569.00", 5)],
     ),
     (
@@ -303,7 +315,7 @@ PRODUCTS = [
         "summit-insulated-bottle-1l", "Summit Insulated Bottle 1L", "sports-outdoors",
         ["sale", "popular"], False, True, "34.00", 2,
         "Double-walled stainless steel: 24 hours cold, 12 hours hot, and a lid that actually survives being dropped.",
-        [("Steel", "BTL-ST", "34.00", 60),
+        [("Steel", "BTL-ST", "34.00", 60, 20),
          ("Matte Black", "BTL-MB", "34.00", 44),
          ("Brick", "BTL-BR", "36.00", 4)],
     ),
@@ -342,20 +354,43 @@ PRODUCTS = [
         [("5-Piece Set", "BRS-5", "58.00", 26),
          ("9-Piece Set", "BRS-9", "92.00", 11)],
     ),
+    (
+        # No category and no photos: a non-physical product that never got
+        # artwork, so listings fall back to the "No image" placeholder.
+        "digital-gift-card", "Digital Gift Card", None,
+        ["popular"], False, True, "50.00", 0,
+        "Delivered by email within minutes, redeemable against anything in the store and valid for two years.",
+        [("$25", "GC-25", "25.00", 999, 50),
+         ("$50", "GC-50", "50.00", 999, 50),
+         ("$100", "GC-100", "100.00", 999, 50)],
+    ),
+    (
+        # No description and no variants: announced but not yet purchasable.
+        "aurora-desk-lamp", "Aurora Desk Lamp", "home-kitchen",
+        ["new-arrival"], False, True, "98.00", 2, None,
+        [],
+    ),
 ]
 
-# code, type, value, min order, max uses, expires in days (None = never), active
+# code, type, value, min order, max uses, expires in days (None = never), active,
+# starting used_count. Between them these cover every rejection branch in
+# validate_coupon: inactive, expired, usage limit reached and minimum order.
 COUPONS = [
-    ("WELCOME10", CouponType.percent, "10", None, 1000, 365, True),
-    ("SAVE20", CouponType.fixed, "20", "100", 500, 90, True),
-    ("FREESHIP5", CouponType.fixed, "5", "25", None, 180, True),
-    ("SUMMER15", CouponType.percent, "15", "75", 200, 30, True),
-    ("VIP25", CouponType.percent, "25", "200", 50, 60, True),
-    ("SPRING10", CouponType.percent, "10", None, 300, -14, True),   # expired
-    ("LEGACY5", CouponType.fixed, "5", None, None, None, False),     # retired
+    ("WELCOME10", CouponType.percent, "10", None, 1000, 365, True, 0),
+    ("SAVE20", CouponType.fixed, "20", "100", 500, 90, True, 0),
+    ("FREESHIP5", CouponType.fixed, "5", "25", None, 180, True, 0),
+    ("SUMMER15", CouponType.percent, "15", "75", 200, 30, True, 0),
+    ("VIP25", CouponType.percent, "25", "200", 50, 60, True, 0),
+    ("SPRING10", CouponType.percent, "10", None, 300, -14, True, 41),  # expired
+    ("LEGACY5", CouponType.fixed, "5", None, None, None, False, 118),  # retired
+    ("FLASH30", CouponType.percent, "30", "150", 25, 21, True, 25),    # fully redeemed
 ]
 
 REVIEW_COMMENTS = [
+    (1, "Stopped working within a fortnight and I'm still waiting on a reply about the replacement."),
+    (1, "Nothing like the listing. Packaging was damaged and the item inside was worse."),
+    (2, "Underwhelming for the money. It does technically work, but I wouldn't buy it again."),
+    (3, "Perfectly average. No real complaints, no real enthusiasm either."),
     (5, "Exactly what I hoped for. Shipping was quick and the packaging was minimal, which I appreciated."),
     (5, "Second one I've bought. The first is still going strong after two years of daily use."),
     (4, "Really solid overall. Knocking off a star only because the sizing runs slightly small."),
@@ -459,7 +494,7 @@ def seed(assume_yes: bool = False) -> None:
                 name=name,
                 description=description,
                 base_price=Decimal(base_price),
-                category_id=categories[category_slug].id,
+                category_id=categories[category_slug].id if category_slug else None,
                 is_featured=featured,
                 is_active=active,
                 # Stagger creation dates so "newest first" listings look natural.
@@ -478,13 +513,16 @@ def seed(assume_yes: bool = False) -> None:
                     sort_order=i,
                 ))
 
-            for variant_name, sku, price, stock in variant_specs:
+            for spec in variant_specs:
+                variant_name, sku, price, stock = spec[:4]
                 variant = ProductVariant(
                     product_id=product.id,
                     name=variant_name,
                     sku=sku,
                     price=Decimal(price),
                     stock_quantity=stock,
+                    # Most products use the default threshold; a few carry their own.
+                    low_stock_threshold=spec[4] if len(spec) > 4 else 5,
                 )
                 variants.append(variant)
                 db.add(variant)
@@ -492,14 +530,14 @@ def seed(assume_yes: bool = False) -> None:
 
         # ── Coupons ────────────────────────────────────────────────────────
         coupons: dict[str, Coupon] = {}
-        for code, ctype, value, min_amount, max_uses, expires_in, is_active in COUPONS:
+        for code, ctype, value, min_amount, max_uses, expires_in, is_active, used in COUPONS:
             coupon = Coupon(
                 code=code,
                 type=ctype,
                 value=Decimal(value),
                 min_order_amount=Decimal(min_amount) if min_amount else None,
                 max_uses=max_uses,
-                used_count=0,
+                used_count=used,
                 expires_at=NOW + timedelta(days=expires_in) if expires_in is not None else None,
                 is_active=is_active,
             )
@@ -513,19 +551,23 @@ def seed(assume_yes: bool = False) -> None:
         sellable = [v for v in variants if v.stock_quantity > 0]
 
         # ── Orders & order items ───────────────────────────────────────────
-        # Weighted so the dashboard shows a realistic funnel rather than an
-        # even split across statuses.
-        status_choices = (
-            [OrderStatus.delivered] * 11
-            + [OrderStatus.shipped] * 4
-            + [OrderStatus.processing] * 3
-            + [OrderStatus.pending] * 2
-            + [OrderStatus.cancelled] * 2
+        # An explicit plan rather than weighted random draws, so every status is
+        # guaranteed a meaningful number of orders instead of whatever the RNG
+        # happens to produce. Shaped like a real funnel: most orders end up
+        # delivered, fewer are still in flight, a minority fail or come back.
+        status_plan = (
+            [OrderStatus.delivered] * 26
+            + [OrderStatus.shipped] * 10
+            + [OrderStatus.processing] * 8
+            + [OrderStatus.cancelled] * 7
+            + [OrderStatus.returned] * 7
+            + [OrderStatus.pending] * 6
         )
+        RNG.shuffle(status_plan)
         orders: list[Order] = []
         purchases: dict[tuple, list] = {}  # (user_id, product_id) -> [order, ...]
 
-        for _ in range(46):
+        for status in status_plan:
             customer = RNG.choice(customers)
             chosen = RNG.sample(sellable, RNG.randint(1, 3))
             placed_at = days_ago(RNG.uniform(1, 165))
@@ -564,7 +606,7 @@ def seed(assume_yes: bool = False) -> None:
             default_address = next(a for a in addresses[customer.email] if a.is_default)
             order = Order(
                 user_id=customer.id,
-                status=RNG.choice(status_choices),
+                status=status,
                 total_amount=subtotal - discount,
                 discount_amount=discount,
                 coupon_id=coupon.id if coupon else None,
@@ -587,50 +629,78 @@ def seed(assume_yes: bool = False) -> None:
         db.flush()
 
         # ── Carts ──────────────────────────────────────────────────────────
-        # A few customers have left something in the basket.
-        for customer in RNG.sample(customers, 5):
+        # A few customers have left something in the basket; one has a cart
+        # record with nothing in it.
+        cart_owners = RNG.sample(customers, 6)
+        empty_cart_owner = cart_owners[0]
+        for customer in cart_owners:
             cart = Cart(user_id=customer.id)
             db.add(cart)
             db.flush()
+            if customer is empty_cart_owner:
+                continue
             for variant in RNG.sample(sellable, RNG.randint(1, 3)):
                 db.add(CartItem(cart_id=cart.id, variant_id=variant.id, quantity=RNG.randint(1, 2)))
 
         # ── Wishlists ──────────────────────────────────────────────────────
+        # Every customer has a wishlist; the newest signup has not saved
+        # anything to theirs yet.
         wishlistable = [p for p in products.values() if p.is_active]
+        empty_wishlist_owner = customers[-1]
         for customer in customers:
             wishlist = Wishlist(user_id=customer.id)
             db.add(wishlist)
             db.flush()
+            if customer is empty_wishlist_owner:
+                continue
             for product in RNG.sample(wishlistable, RNG.randint(2, 5)):
                 db.add(WishlistItem(wishlist_id=wishlist.id, product_id=product.id))
 
         # ── Reviews ────────────────────────────────────────────────────────
         # Only from customers who actually bought the product, one per pair.
-        review_count = 0
-        for (user_id, product_id), placed in purchases.items():
-            if RNG.random() > 0.55:
-                continue
+        # The first few are assigned deterministically so that every star
+        # rating, rating-only reviews and the moderation queue are all covered
+        # however the RNG falls.
+        by_rating: dict[int, list] = {}
+        for rating, comment in REVIEW_COMMENTS:
+            by_rating.setdefault(rating, []).append(comment)
+
+        reviewed = [key for key in purchases if RNG.random() < 0.55]
+        for i, (user_id, product_id) in enumerate(reviewed):
+            placed = purchases[(user_id, product_id)]
             first_order = min(placed, key=lambda o: o.created_at)
-            rating, comment = RNG.choice(REVIEW_COMMENTS)
+            if i < 5:
+                rating = i + 1                       # guarantees one of each 1-5
+                comment = RNG.choice(by_rating[rating])
+            else:
+                rating, comment = RNG.choice(REVIEW_COMMENTS)
             db.add(Review(
                 user_id=user_id,
                 product_id=product_id,
                 rating=rating,
-                comment=comment,
-                # Most reviews are published; a handful await moderation.
-                is_approved=RNG.random() < 0.8,
+                # A couple of customers leave a rating and no words at all.
+                comment=None if i in (5, 6) else comment,
+                # Most reviews are published; a steady minority await moderation.
+                is_approved=(i % 7 != 3),
                 created_at=first_order.created_at + timedelta(days=RNG.uniform(2, 20)),
             ))
-            review_count += 1
+        review_count = len(reviewed)
         db.flush()
 
         # ── Return requests ────────────────────────────────────────────────
-        returnable = [o for o in orders if o.status == OrderStatus.delivered]
+        # Every returned order is backed by an approved request, and a handful
+        # of delivered orders have requests still working through the queue.
+        returned_orders = [o for o in orders if o.status == OrderStatus.returned]
+        delivered_orders = [o for o in orders if o.status == OrderStatus.delivered]
+        open_requests = RNG.sample(delivered_orders, min(8, len(delivered_orders)))
+        return_plan = (
+            [(o, ReturnStatus.approved) for o in returned_orders]
+            + [(o, RNG.choice([ReturnStatus.pending] * 2 + [ReturnStatus.rejected]))
+               for o in open_requests]
+        )
+
         return_count = 0
-        for order in RNG.sample(returnable, min(7, len(returnable))):
-            status = RNG.choice(
-                [ReturnStatus.pending] * 3 + [ReturnStatus.approved] * 2 + [ReturnStatus.rejected]
-            )
+        for order, status in return_plan:
             request = ReturnRequest(
                 order_id=order.id,
                 user_id=order.user_id,
@@ -650,12 +720,31 @@ def seed(assume_yes: bool = False) -> None:
                     order_item_id=item.id,
                     quantity=RNG.randint(1, item.quantity),
                 ))
-            # An approved return moves the order into its final state.
-            if status == ReturnStatus.approved:
-                order.status = OrderStatus.returned
             return_count += 1
+        db.flush()
+
+        # ── Nullable relationships ─────────────────────────────────────────
+        # The schema lets orders outlive the accounts and variants they point
+        # at (both are ON DELETE SET NULL) and lets the address snapshot be
+        # absent. Nothing in the generated data above hits those branches, so
+        # seed one of each — the admin order list renders them differently.
+        untouched = [
+            o for o in orders
+            if o.status in (OrderStatus.delivered, OrderStatus.cancelled)
+            and o not in returned_orders and o not in open_requests
+        ]
+        closed_account_order, no_address_order, discontinued_order = untouched[:3]
+        closed_account_order.user_id = None          # customer deleted their account
+        # A plain None on a JSONB column persists as the JSON value `null`;
+        # null() forces a real SQL NULL, which is what nullable=True means here.
+        no_address_order.shipping_address_snapshot = null()
+        discontinued_order.items[0].variant_id = None  # variant removed from the catalogue
 
         db.commit()
+
+        status_counts = {}
+        for order in orders:
+            status_counts[order.status.value] = status_counts.get(order.status.value, 0) + 1
 
         print("Database seeded successfully.\n")
         print(f"  Users:      {len(USERS)} (admin@example.com / admin1234, everyone else / password123)")
@@ -665,7 +754,14 @@ def seed(assume_yes: bool = False) -> None:
               f"and {sum(p[7] for p in PRODUCTS)} photos")
         print(f"  Coupons:    {len(COUPONS)}")
         print(f"  Orders:     {len(orders)} with {sum(len(o.items) for o in orders)} line items")
+        for status in OrderStatus:
+            print(f"                {status.value:<12} {status_counts.get(status.value, 0)}")
         print(f"  Reviews:    {review_count}    Returns: {return_count}")
+        print("\n  Edge cases covered: order with no account, order with no address")
+        print("  snapshot, line item with a discontinued variant, product with no")
+        print("  category / no photos / no description / no variants, empty category,")
+        print("  unused tag, empty cart, empty wishlist, exhausted + expired +")
+        print("  inactive coupons, deactivated user, unlabelled address.")
         print(f"\n  Photos are served from {settings.PUBLIC_BASE_URL.rstrip('/')}/static/products/")
 
     except Exception as e:
