@@ -32,6 +32,9 @@ class Settings(BaseSettings):
 
     # App
     DEBUG: bool = False
+    # Public origin of this API. Used to build absolute URLs for locally served
+    # assets such as the seeded product photos under /static.
+    PUBLIC_BASE_URL: str = "http://localhost:8000"
 
 
 settings = Settings()

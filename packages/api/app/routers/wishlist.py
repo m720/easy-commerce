@@ -6,6 +6,7 @@ from app.models.wishlist import Wishlist, WishlistItem
 from app.models.cart import Cart, CartItem
 from app.schemas.wishlist import WishlistResponse, AddToWishlist
 from app.services.cart_service import get_or_create_cart
+from app.services.product_service import _enrich_images
 
 router = APIRouter(prefix="/wishlist", tags=["Wishlist"])
 
@@ -24,6 +25,8 @@ def get_or_create_wishlist(user_id: UUID, db: Session) -> Wishlist:
 def get_wishlist(current_user=Depends(get_current_user), db: Session = Depends(get_db)):
     wishlist = get_or_create_wishlist(current_user.id, db)
     db.refresh(wishlist)
+    for item in wishlist.items:
+        _enrich_images(item.product)
     return wishlist
 
 

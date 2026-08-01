@@ -20,8 +20,10 @@ ecommerce/
 ├── packages/
 │   ├── api/                 # FastAPI backend
 │   │   ├── app/
+│   │   │   └── static/      # Product photos served at /static
 │   │   ├── tests/
 │   │   ├── alembic/
+│   │   ├── scripts/         # Product photo generator
 │   │   ├── seed.py
 │   │   └── [other backend files]
 │   └── web/                # React + TypeScript frontend
@@ -79,7 +81,7 @@ cp .env.example .env
 docker-compose up
 
 # Seed database on a separate terminal
-docker-compose exec api python seed.py
+docker-compose exec api python seed.py --yes
 
 # Frontend setup
 cd ../web
@@ -90,6 +92,38 @@ npm run dev
 ### API Endpoints
 - Swagger UI: http://localhost:8000/docs
 - API Base URL: http://localhost:8000/api/v1
+
+## 🌱 Sample Data
+
+`packages/api/seed.py` populates every table — users, addresses, categories, tags,
+products with photos and variants, coupons, carts, wishlists, orders, order items,
+reviews and return requests — so the storefront, admin dashboard and analytics
+reports all have realistic content on a fresh checkout.
+
+```bash
+cd packages/api
+python seed.py          # prompts before clearing existing rows
+python seed.py --yes    # non-interactive
+```
+
+Seeding is destructive and idempotent: it truncates the tables above and rebuilds
+them from a fixed random seed, so repeat runs give identical data.
+
+| Account | Password | Role |
+|---------|----------|------|
+| `admin@example.com` | `admin1234` | admin |
+| `alice@example.com` (and the other customers) | `password123` | user |
+
+Product photos are flat-vector SVGs committed under `packages/api/app/static/products`
+and served by the API at `/static/products/...`, so images work with no S3 bucket
+and no network access. Regenerate them with:
+
+```bash
+python scripts/generate_product_images.py
+```
+
+If the API is not on `http://localhost:8000`, set `PUBLIC_BASE_URL` before seeding —
+it is the origin baked into the stored photo URLs.
 
 ## 📖 Documentation
 

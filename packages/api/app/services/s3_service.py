@@ -27,8 +27,21 @@ def generate_upload_url(s3_key: str, content_type: str) -> str:
     return url
 
 
+def _is_direct_url(s3_key: str) -> bool:
+    """True for images that are already reachable without S3.
+
+    Seeded product photos are served by this API from /static, and images may
+    also be pointed at an external host. Both are stored verbatim as the key.
+    """
+    return s3_key.startswith(("http://", "https://", "/"))
+
+
 def generate_read_url(s3_key: str, expiry: int = None) -> Optional[str]:
-    if not s3_key or not settings.S3_BUCKET_NAME:
+    if not s3_key:
+        return None
+    if _is_direct_url(s3_key):
+        return s3_key
+    if not settings.S3_BUCKET_NAME:
         return None
     try:
         client = _get_client()
@@ -43,5 +56,8 @@ def generate_read_url(s3_key: str, expiry: int = None) -> Optional[str]:
 
 
 def delete_object(s3_key: str) -> None:
+    # Directly-served images (seed data, external hosts) have no S3 object to remove.
+    if not s3_key or _is_direct_url(s3_key) or not settings.S3_BUCKET_NAME:
+        return
     client = _get_client()
     client.delete_object(Bucket=settings.S3_BUCKET_NAME, Key=s3_key)
