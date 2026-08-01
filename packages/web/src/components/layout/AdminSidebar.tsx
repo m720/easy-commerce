@@ -1,7 +1,7 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom"
 import {
   LayoutDashboard, Package, Tag, FolderOpen,
-  ShoppingBag, RotateCcw, Ticket, Users, BarChart2
+  ShoppingBag, RotateCcw, Ticket, Users, BarChart2, ArrowLeft
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -19,11 +19,11 @@ const links = [
 
 export default function AdminSidebar() {
   return (
-    <aside className="w-64 min-h-screen bg-gray-900 text-gray-300 flex flex-col">
-      <div className="px-6 py-5 border-b border-gray-700">
-        <span className="text-white font-bold text-lg">Admin Panel</span>
+    <aside className="w-64 shrink-0 min-h-screen bg-charcoal text-sage flex flex-col">
+      <div className="px-5 py-5 border-b border-sage/20">
+        <span className="text-white font-black text-lg tracking-tight">Admin Panel</span>
       </div>
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-0.5">
         {links.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
@@ -31,18 +31,24 @@ export default function AdminSidebar() {
             end={end}
             className={({ isActive }) =>
               cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                "flex items-center gap-3 px-3 py-2 rounded-nested text-sm font-bold transition-colors",
                 isActive
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-gray-800 hover:text-white"
+                  ? "bg-cream text-charcoal"
+                  : "text-sage hover:bg-white/5 hover:text-white"
               )
             }
           >
-            <Icon size={18} />
+            <Icon size={17} />
             {label}
           </NavLink>
         ))}
       </nav>
+      <div className="px-3 py-4 border-t border-sage/20">
+        <Link to="/" className="flex items-center gap-3 px-3 py-2 rounded-nested text-sm font-bold text-sage hover:bg-white/5 hover:text-white transition-colors">
+          <ArrowLeft size={17} />
+          Back to store
+        </Link>
+      </div>
     </aside>
   )
 }

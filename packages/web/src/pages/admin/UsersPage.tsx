@@ -11,43 +11,43 @@ export default function UsersPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Users</h1>
+      <h1 className="text-2xl font-bold text-charcoal">Users</h1>
 
-      <div className="bg-white border rounded-xl overflow-hidden">
+      <div className="bg-white border border-sage/30 rounded-nested shadow-soft overflow-hidden">
         {isLoading ? (
           <div className="space-y-2 p-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 animate-pulse rounded" />
+              <div key={i} className="h-12 bg-sage/20 animate-pulse rounded" />
             ))}
           </div>
         ) : !users || users.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-charcoal/70">
             <p className="font-medium">No users found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
+              <thead className="bg-cream border-b">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Name</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Email</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Role</th>
-                  <th className="px-4 py-3 text-center font-medium text-gray-600">Active</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Joined</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Actions</th>
+                  <th className="px-4 py-3 text-left font-medium text-charcoal/70">Name</th>
+                  <th className="px-4 py-3 text-left font-medium text-charcoal/70">Email</th>
+                  <th className="px-4 py-3 text-left font-medium text-charcoal/70">Role</th>
+                  <th className="px-4 py-3 text-center font-medium text-charcoal/70">Active</th>
+                  <th className="px-4 py-3 text-left font-medium text-charcoal/70">Joined</th>
+                  <th className="px-4 py-3 text-left font-medium text-charcoal/70">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <tr key={user.id} className="border-b last:border-0 hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-gray-900">{user.full_name}</td>
-                    <td className="px-4 py-3 text-gray-600">{user.email}</td>
+                  <tr key={user.id} className="border-b last:border-0 hover:bg-cream">
+                    <td className="px-4 py-3 font-medium text-charcoal">{user.full_name}</td>
+                    <td className="px-4 py-3 text-charcoal/70">{user.email}</td>
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
                           user.role === "admin"
                             ? "bg-purple-100 text-purple-700"
-                            : "bg-gray-100 text-gray-600"
+                            : "bg-sage/20 text-charcoal/70"
                         }`}
                       >
                         {user.role}
@@ -62,7 +62,7 @@ export default function UsersPage() {
                         {user.is_active ? "Active" : "Inactive"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                    <td className="px-4 py-3 text-charcoal/70 whitespace-nowrap">
                       {formatDate(user.created_at)}
                     </td>
                     <td className="px-4 py-3">

@@ -3,11 +3,11 @@ import { cn } from "@/lib/utils"
 
 const statusConfig: Record<OrderStatus, { label: string; className: string }> = {
   pending:    { label: "Pending",    className: "bg-yellow-100 text-yellow-800" },
-  processing: { label: "Processing", className: "bg-blue-100 text-blue-800" },
-  shipped:    { label: "Shipped",    className: "bg-indigo-100 text-indigo-800" },
+  processing: { label: "Processing", className: "bg-brand/10 text-brand" },
+  shipped:    { label: "Shipped",    className: "bg-brand/10 text-brand" },
   delivered:  { label: "Delivered",  className: "bg-green-100 text-green-800" },
   cancelled:  { label: "Cancelled",  className: "bg-red-100 text-red-800" },
-  returned:   { label: "Returned",   className: "bg-gray-100 text-gray-800" },
+  returned:   { label: "Returned",   className: "bg-sage/20 text-charcoal" },
 }
 
 export default function OrderStatusBadge({ status }: { status: OrderStatus }) {

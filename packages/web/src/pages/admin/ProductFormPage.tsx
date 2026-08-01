@@ -181,57 +181,57 @@ export default function ProductFormPage() {
   if (isEdit && productLoading) {
     return (
       <div className="p-6 space-y-4">
-        <div className="h-8 w-48 bg-gray-200 animate-pulse rounded" />
-        <div className="h-64 bg-gray-100 animate-pulse rounded-xl" />
+        <div className="h-8 w-48 bg-sage/30 animate-pulse rounded" />
+        <div className="h-64 bg-sage/20 animate-pulse rounded-xl" />
       </div>
     )
   }
 
   return (
     <div className="p-6 space-y-8 max-w-3xl">
-      <h1 className="text-2xl font-bold text-gray-900">
+      <h1 className="text-2xl font-bold text-charcoal">
         {isEdit ? `Edit: ${product?.name ?? "Product"}` : "New Product"}
       </h1>
 
       {/* Product Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="bg-white border rounded-xl p-6 space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-white border border-sage/30 rounded-nested shadow-soft p-6 space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+          <label className="block text-sm font-medium text-charcoal/80 mb-1">Name *</label>
           <input
             {...register("name", { required: "Name is required" })}
-            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
           />
           {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <label className="block text-sm font-medium text-charcoal/80 mb-1">Description</label>
           <textarea
             {...register("description")}
             rows={4}
-            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y"
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 resize-y"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Base Price *</label>
+            <label className="block text-sm font-medium text-charcoal/80 mb-1">Base Price *</label>
             <input
               {...register("base_price", { required: "Price is required" })}
               type="number"
               step="0.01"
               min="0"
               placeholder="0.00"
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
             />
             {errors.base_price && <p className="text-red-500 text-xs mt-1">{errors.base_price.message}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <label className="block text-sm font-medium text-charcoal/80 mb-1">Category</label>
             <select
               {...register("category_id")}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40 bg-white"
             >
               <option value="">No category</option>
               {categories?.map((cat) => (
@@ -245,7 +245,7 @@ export default function ProductFormPage() {
 
         {/* Tags */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+          <label className="block text-sm font-medium text-charcoal/80 mb-2">Tags</label>
           <div className="flex flex-wrap gap-2">
             {tags?.map((tag) => (
               <button
@@ -254,8 +254,8 @@ export default function ProductFormPage() {
                 onClick={() => toggleTag(tag.id)}
                 className={`px-3 py-1 rounded-full text-sm border transition-colors ${
                   watchedTagIds.includes(tag.id)
-                    ? "bg-indigo-600 text-white border-indigo-600"
-                    : "bg-white text-gray-600 border-gray-300 hover:border-indigo-400"
+                    ? "bg-brand text-white border-brand"
+                    : "bg-white text-charcoal/70 border-sage/40 hover:border-brand"
                 }`}
               >
                 {tag.name}
@@ -266,13 +266,13 @@ export default function ProductFormPage() {
 
         <div className="flex items-center gap-6">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" {...register("is_featured")} className="rounded border-gray-300" />
-            <span className="text-sm font-medium text-gray-700">Featured</span>
+            <input type="checkbox" {...register("is_featured")} className="rounded border-sage/40" />
+            <span className="text-sm font-medium text-charcoal/80">Featured</span>
           </label>
           {isEdit && (
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" {...register("is_active")} className="rounded border-gray-300" />
-              <span className="text-sm font-medium text-gray-700">Active</span>
+              <input type="checkbox" {...register("is_active")} className="rounded border-sage/40" />
+              <span className="text-sm font-medium text-charcoal/80">Active</span>
             </label>
           )}
         </div>
@@ -281,14 +281,14 @@ export default function ProductFormPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            className="bg-brand text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-brand transition-colors disabled:opacity-50"
           >
             {isSubmitting ? "Saving..." : isEdit ? "Save Changes" : "Create Product"}
           </button>
           <button
             type="button"
             onClick={() => navigate("/admin/products")}
-            className="border px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+            className="border px-6 py-2 rounded-lg text-sm font-medium hover:bg-cream transition-colors"
           >
             Cancel
           </button>
@@ -297,16 +297,16 @@ export default function ProductFormPage() {
 
       {/* Variants (edit mode only) */}
       {isEdit && (
-        <div className="bg-white border rounded-xl p-6 space-y-4">
+        <div className="bg-white border border-sage/30 rounded-nested shadow-soft p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Variants</h2>
+            <h2 className="text-lg font-semibold text-charcoal">Variants</h2>
             <button
               onClick={() => {
                 variantForm.reset({ name: "", sku: "", price: "", stock_quantity: 0, low_stock_threshold: 5 })
                 setEditingVariantId(null)
                 setShowVariantForm(!showVariantForm)
               }}
-              className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+              className="inline-flex items-center gap-1 text-sm text-brand hover:text-brand font-medium"
             >
               <Plus size={15} /> Add Variant
             </button>
@@ -315,52 +315,52 @@ export default function ProductFormPage() {
           {showVariantForm && (
             <form
               onSubmit={variantForm.handleSubmit(onVariantSubmit)}
-              className="bg-gray-50 border rounded-lg p-4 space-y-3"
+              className="bg-cream border rounded-lg p-4 space-y-3"
             >
-              <h3 className="text-sm font-medium text-gray-700">
+              <h3 className="text-sm font-medium text-charcoal/80">
                 {editingVariantId ? "Edit Variant" : "New Variant"}
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-gray-600 mb-1 block">Name *</label>
+                  <label className="text-xs text-charcoal/70 mb-1 block">Name *</label>
                   <input
                     {...variantForm.register("name", { required: true })}
-                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-600 mb-1 block">SKU *</label>
+                  <label className="text-xs text-charcoal/70 mb-1 block">SKU *</label>
                   <input
                     {...variantForm.register("sku", { required: true })}
-                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-600 mb-1 block">Price *</label>
+                  <label className="text-xs text-charcoal/70 mb-1 block">Price *</label>
                   <input
                     {...variantForm.register("price", { required: true })}
                     type="number"
                     step="0.01"
                     min="0"
-                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-600 mb-1 block">Stock</label>
+                  <label className="text-xs text-charcoal/70 mb-1 block">Stock</label>
                   <input
                     {...variantForm.register("stock_quantity", { valueAsNumber: true })}
                     type="number"
                     min="0"
-                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-600 mb-1 block">Low Stock Threshold</label>
+                  <label className="text-xs text-charcoal/70 mb-1 block">Low Stock Threshold</label>
                   <input
                     {...variantForm.register("low_stock_threshold", { valueAsNumber: true })}
                     type="number"
                     min="0"
-                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
                   />
                 </div>
               </div>
@@ -368,14 +368,14 @@ export default function ProductFormPage() {
                 <button
                   type="submit"
                   disabled={variantForm.formState.isSubmitting}
-                  className="bg-indigo-600 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+                  className="bg-brand text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-brand disabled:opacity-50"
                 >
                   {editingVariantId ? "Update" : "Add"}
                 </button>
                 <button
                   type="button"
                   onClick={() => { setShowVariantForm(false); setEditingVariantId(null) }}
-                  className="border px-4 py-1.5 rounded text-sm hover:bg-gray-100"
+                  className="border px-4 py-1.5 rounded text-sm hover:bg-sage/20"
                 >
                   Cancel
                 </button>
@@ -384,37 +384,37 @@ export default function ProductFormPage() {
           )}
 
           {!variants || variants.length === 0 ? (
-            <p className="text-sm text-gray-500 py-4 text-center">No variants yet. Add one above.</p>
+            <p className="text-sm text-charcoal/70 py-4 text-center">No variants yet. Add one above.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b">
+                <thead className="bg-cream border-b">
                   <tr>
-                    <th className="px-3 py-2 text-left font-medium text-gray-600">Name</th>
-                    <th className="px-3 py-2 text-left font-medium text-gray-600">SKU</th>
-                    <th className="px-3 py-2 text-right font-medium text-gray-600">Price</th>
-                    <th className="px-3 py-2 text-right font-medium text-gray-600">Stock</th>
-                    <th className="px-3 py-2 text-right font-medium text-gray-600">Actions</th>
+                    <th className="px-3 py-2 text-left font-medium text-charcoal/70">Name</th>
+                    <th className="px-3 py-2 text-left font-medium text-charcoal/70">SKU</th>
+                    <th className="px-3 py-2 text-right font-medium text-charcoal/70">Price</th>
+                    <th className="px-3 py-2 text-right font-medium text-charcoal/70">Stock</th>
+                    <th className="px-3 py-2 text-right font-medium text-charcoal/70">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {variants.map((v) => (
                     <tr key={v.id} className="border-b last:border-0">
-                      <td className="px-3 py-2 text-gray-900">{v.name}</td>
-                      <td className="px-3 py-2 font-mono text-xs text-gray-500">{v.sku}</td>
+                      <td className="px-3 py-2 text-charcoal">{v.name}</td>
+                      <td className="px-3 py-2 font-mono text-xs text-charcoal/70">{v.sku}</td>
                       <td className="px-3 py-2 text-right">{formatPrice(v.price)}</td>
                       <td className="px-3 py-2 text-right">{v.stock_quantity}</td>
                       <td className="px-3 py-2">
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => handleEditVariant(v)}
-                            className="p-1 text-gray-500 hover:text-indigo-600 rounded"
+                            className="p-1 text-charcoal/70 hover:text-brand rounded"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
                           </button>
                           <button
                             onClick={() => handleDeleteVariant(v.id, v.name)}
-                            className="p-1 text-gray-500 hover:text-red-600 rounded"
+                            className="p-1 text-charcoal/70 hover:text-red-600 rounded"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -431,13 +431,13 @@ export default function ProductFormPage() {
 
       {/* Images (edit mode only) */}
       {isEdit && (
-        <div className="bg-white border rounded-xl p-6 space-y-4">
+        <div className="bg-white border border-sage/30 rounded-nested shadow-soft p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Images</h2>
+            <h2 className="text-lg font-semibold text-charcoal">Images</h2>
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-700 font-medium disabled:opacity-50"
+              className="inline-flex items-center gap-1 text-sm text-brand hover:text-brand font-medium disabled:opacity-50"
             >
               <Plus size={15} /> {uploading ? "Uploading..." : "Add Image"}
             </button>
@@ -451,15 +451,15 @@ export default function ProductFormPage() {
           </div>
 
           {!images || images.length === 0 ? (
-            <p className="text-sm text-gray-500 py-4 text-center">No images yet. Upload one above.</p>
+            <p className="text-sm text-charcoal/70 py-4 text-center">No images yet. Upload one above.</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {images.map((img) => (
-                <div key={img.id} className="relative group rounded-lg overflow-hidden border bg-gray-50">
+                <div key={img.id} className="relative group rounded-lg overflow-hidden border bg-cream">
                   {img.url ? (
                     <img src={img.url} alt="Product" className="w-full h-32 object-cover" />
                   ) : (
-                    <div className="w-full h-32 flex items-center justify-center text-gray-400 text-xs">
+                    <div className="w-full h-32 flex items-center justify-center text-charcoal/70 text-xs">
                       No preview
                     </div>
                   )}

@@ -81,67 +81,67 @@ export default function CouponsPage() {
   const CouponFormFields = ({ form }: { form: ReturnType<typeof useForm<CouponFormValues>> }) => (
     <div className="grid grid-cols-2 gap-3">
       <div>
-        <label className="block text-xs font-medium text-gray-600 mb-1">Code *</label>
+        <label className="block text-xs font-medium text-charcoal/70 mb-1">Code *</label>
         <input
           {...form.register("code", { required: true })}
-          className="w-full border rounded px-2 py-1.5 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full border rounded px-2 py-1.5 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-brand/40"
           placeholder="SAVE20"
         />
       </div>
       <div>
-        <label className="block text-xs font-medium text-gray-600 mb-1">Type *</label>
+        <label className="block text-xs font-medium text-charcoal/70 mb-1">Type *</label>
         <select
           {...form.register("type")}
-          className="w-full border rounded px-2 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full border rounded px-2 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand/40"
         >
           <option value="percent">Percent (%)</option>
           <option value="fixed">Fixed ($)</option>
         </select>
       </div>
       <div>
-        <label className="block text-xs font-medium text-gray-600 mb-1">Value *</label>
+        <label className="block text-xs font-medium text-charcoal/70 mb-1">Value *</label>
         <input
           {...form.register("value", { required: true })}
           type="number"
           step="0.01"
           min="0"
-          className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
           placeholder="20"
         />
       </div>
       <div>
-        <label className="block text-xs font-medium text-gray-600 mb-1">Min Order Amount</label>
+        <label className="block text-xs font-medium text-charcoal/70 mb-1">Min Order Amount</label>
         <input
           {...form.register("min_order_amount")}
           type="number"
           step="0.01"
           min="0"
-          className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
           placeholder="0.00"
         />
       </div>
       <div>
-        <label className="block text-xs font-medium text-gray-600 mb-1">Max Uses</label>
+        <label className="block text-xs font-medium text-charcoal/70 mb-1">Max Uses</label>
         <input
           {...form.register("max_uses")}
           type="number"
           min="1"
-          className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
           placeholder="Unlimited"
         />
       </div>
       <div>
-        <label className="block text-xs font-medium text-gray-600 mb-1">Expires At</label>
+        <label className="block text-xs font-medium text-charcoal/70 mb-1">Expires At</label>
         <input
           {...form.register("expires_at")}
           type="date"
-          className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full border rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/40"
         />
       </div>
       <div className="col-span-2">
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" {...form.register("is_active")} className="rounded border-gray-300" />
-          <span className="text-sm text-gray-700">Active</span>
+          <input type="checkbox" {...form.register("is_active")} className="rounded border-sage/40" />
+          <span className="text-sm text-charcoal/80">Active</span>
         </label>
       </div>
     </div>
@@ -150,10 +150,10 @@ export default function CouponsPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Coupons</h1>
+        <h1 className="text-2xl font-bold text-charcoal">Coupons</h1>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="inline-flex items-center gap-2 bg-brand text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand transition-colors"
         >
           <Plus size={16} /> Add Coupon
         </button>
@@ -161,22 +161,22 @@ export default function CouponsPage() {
 
       {/* Add Form */}
       {showAddForm && (
-        <div className="bg-white border rounded-xl p-5 space-y-4">
-          <h2 className="text-base font-semibold text-gray-800">New Coupon</h2>
+        <div className="bg-white border border-sage/30 rounded-nested shadow-soft p-5 space-y-4">
+          <h2 className="text-base font-semibold text-charcoal">New Coupon</h2>
           <form onSubmit={addForm.handleSubmit(handleCreate)} className="space-y-4">
             <CouponFormFields form={addForm} />
             <div className="flex gap-2">
               <button
                 type="submit"
                 disabled={addForm.formState.isSubmitting}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+                className="bg-brand text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand disabled:opacity-50"
               >
                 Create
               </button>
               <button
                 type="button"
                 onClick={() => { setShowAddForm(false); addForm.reset(emptyForm) }}
-                className="border px-4 py-2 rounded-lg text-sm hover:bg-gray-50"
+                className="border px-4 py-2 rounded-lg text-sm hover:bg-cream"
               >
                 Cancel
               </button>
@@ -186,63 +186,63 @@ export default function CouponsPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white border rounded-xl overflow-hidden">
+      <div className="bg-white border border-sage/30 rounded-nested shadow-soft overflow-hidden">
         {isLoading ? (
           <div className="space-y-2 p-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 animate-pulse rounded" />
+              <div key={i} className="h-12 bg-sage/20 animate-pulse rounded" />
             ))}
           </div>
         ) : !coupons || coupons.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-charcoal/70">
             <p className="font-medium">No coupons yet</p>
             <p className="text-sm mt-1">Create your first coupon above.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
+              <thead className="bg-cream border-b">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Code</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Type</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-600">Value</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-600">Min Order</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-600">Max Uses</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-600">Used</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Expires</th>
-                  <th className="px-4 py-3 text-center font-medium text-gray-600">Active</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-600">Actions</th>
+                  <th className="px-4 py-3 text-left font-medium text-charcoal/70">Code</th>
+                  <th className="px-4 py-3 text-left font-medium text-charcoal/70">Type</th>
+                  <th className="px-4 py-3 text-right font-medium text-charcoal/70">Value</th>
+                  <th className="px-4 py-3 text-right font-medium text-charcoal/70">Min Order</th>
+                  <th className="px-4 py-3 text-right font-medium text-charcoal/70">Max Uses</th>
+                  <th className="px-4 py-3 text-right font-medium text-charcoal/70">Used</th>
+                  <th className="px-4 py-3 text-left font-medium text-charcoal/70">Expires</th>
+                  <th className="px-4 py-3 text-center font-medium text-charcoal/70">Active</th>
+                  <th className="px-4 py-3 text-right font-medium text-charcoal/70">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {coupons.map((coupon) => (
                   <>
-                    <tr key={coupon.id} className="border-b last:border-0 hover:bg-gray-50">
+                    <tr key={coupon.id} className="border-b last:border-0 hover:bg-cream">
                       <td className="px-4 py-3">
-                        <span className="font-mono font-semibold text-gray-900 bg-gray-100 px-2 py-0.5 rounded text-xs">
+                        <span className="font-mono font-semibold text-charcoal bg-sage/20 px-2 py-0.5 rounded text-xs">
                           {coupon.code}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-600 capitalize">{coupon.type}</td>
-                      <td className="px-4 py-3 text-right font-medium text-gray-900">
+                      <td className="px-4 py-3 text-charcoal/70 capitalize">{coupon.type}</td>
+                      <td className="px-4 py-3 text-right font-medium text-charcoal">
                         {coupon.type === "percent"
                           ? `${parseFloat(coupon.value)}%`
                           : formatPrice(coupon.value)}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-600">
+                      <td className="px-4 py-3 text-right text-charcoal/70">
                         {coupon.min_order_amount ? formatPrice(coupon.min_order_amount) : "—"}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-600">
+                      <td className="px-4 py-3 text-right text-charcoal/70">
                         {coupon.max_uses ?? "∞"}
                       </td>
-                      <td className="px-4 py-3 text-right text-gray-600">{coupon.used_count}</td>
-                      <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                      <td className="px-4 py-3 text-right text-charcoal/70">{coupon.used_count}</td>
+                      <td className="px-4 py-3 text-charcoal/70 whitespace-nowrap">
                         {coupon.expires_at ? formatDate(coupon.expires_at) : "Never"}
                       </td>
                       <td className="px-4 py-3 text-center">
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            coupon.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                            coupon.is_active ? "bg-green-100 text-green-700" : "bg-sage/20 text-charcoal/70"
                           }`}
                         >
                           {coupon.is_active ? "Active" : "Inactive"}
@@ -252,14 +252,14 @@ export default function CouponsPage() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleEdit(coupon)}
-                            className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                            className="p-1.5 text-charcoal/70 hover:text-brand hover:bg-brand/10 rounded transition-colors"
                           >
                             <Pencil size={14} />
                           </button>
                           <button
                             onClick={() => handleDelete(coupon.id, coupon.code)}
                             disabled={deleteCoupon.isPending}
-                            className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                            className="p-1.5 text-charcoal/70 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -267,23 +267,23 @@ export default function CouponsPage() {
                       </td>
                     </tr>
                     {editingId === coupon.id && (
-                      <tr key={`edit-${coupon.id}`} className="bg-indigo-50 border-b">
+                      <tr key={`edit-${coupon.id}`} className="bg-brand/10 border-b">
                         <td colSpan={9} className="px-4 py-4">
                           <form onSubmit={editForm.handleSubmit(handleUpdate)} className="space-y-4">
-                            <h3 className="text-sm font-medium text-gray-700">Edit Coupon</h3>
+                            <h3 className="text-sm font-medium text-charcoal/80">Edit Coupon</h3>
                             <CouponFormFields form={editForm} />
                             <div className="flex gap-2">
                               <button
                                 type="submit"
                                 disabled={editForm.formState.isSubmitting}
-                                className="p-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50"
+                                className="p-1.5 bg-brand text-white rounded hover:bg-brand disabled:opacity-50"
                               >
                                 <Check size={14} />
                               </button>
                               <button
                                 type="button"
                                 onClick={() => setEditingId(null)}
-                                className="p-1.5 border rounded hover:bg-gray-100"
+                                className="p-1.5 border rounded hover:bg-sage/20"
                               >
                                 <X size={14} />
                               </button>

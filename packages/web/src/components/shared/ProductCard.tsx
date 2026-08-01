@@ -18,9 +18,9 @@ export default function ProductCard({ product }: Props) {
   const inWishlist = wishlist?.items.some((i) => i.product_id === product.id)
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group">
+    <div className="bg-white rounded-card border border-sage/30 overflow-hidden hover:shadow-soft hover:-translate-y-0.5 transition-all duration-300 group">
       <Link to={`/products/${product.id}`} className="block relative">
-        <div className="aspect-square bg-gray-100 overflow-hidden">
+        <div className="aspect-square bg-sage/20 overflow-hidden">
           {primaryImage?.url ? (
             <img
               src={primaryImage.url}
@@ -28,36 +28,34 @@ export default function ProductCard({ product }: Props) {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>
+            <div className="w-full h-full flex items-center justify-center text-charcoal/70 text-sm">No image</div>
           )}
         </div>
         {product.is_featured && (
-          <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">Featured</span>
+          <span className="absolute top-2.5 left-2.5 bg-charcoal text-white label-xs px-3 py-1.5 rounded-full">Featured</span>
         )}
         {!product.is_active && (
-          <span className="absolute top-2 right-2 bg-gray-500 text-white text-xs px-2 py-0.5 rounded-full">Inactive</span>
+          <span className="absolute top-2.5 right-2.5 bg-sage text-charcoal label-xs px-3 py-1.5 rounded-full">Inactive</span>
+        )}
+        {token && (
+          <button
+            onClick={(e) => { e.preventDefault(); addToWishlist.mutate(product.id) }}
+            className={`absolute bottom-2.5 right-2.5 p-2 rounded-full shadow-sm transition-colors ${inWishlist ? "text-brand bg-white" : "text-charcoal/70 bg-white/90 hover:text-brand"}`}
+            disabled={addToWishlist.isPending}
+          >
+            <Heart size={15} fill={inWishlist ? "currentColor" : "none"} />
+          </button>
         )}
       </Link>
 
       <div className="p-4">
         <Link to={`/products/${product.id}`}>
-          <h3 className="font-medium text-gray-900 truncate hover:text-blue-600">{product.name}</h3>
+          <h3 className="text-sm font-bold text-charcoal truncate hover:text-brand transition-colors">{product.name}</h3>
         </Link>
         {product.category && (
-          <p className="text-xs text-gray-500 mt-0.5">{product.category.name}</p>
+          <p className="text-xs text-charcoal/70 mt-0.5">{product.category.name}</p>
         )}
-        <div className="flex items-center justify-between mt-3">
-          <span className="font-bold text-gray-900">{formatPrice(product.base_price)}</span>
-          {token && (
-            <button
-              onClick={() => addToWishlist.mutate(product.id)}
-              className={`p-1.5 rounded-full transition-colors ${inWishlist ? "text-red-500 bg-red-50" : "text-gray-400 hover:text-red-500 hover:bg-red-50"}`}
-              disabled={addToWishlist.isPending}
-            >
-              <Heart size={16} fill={inWishlist ? "currentColor" : "none"} />
-            </button>
-          )}
-        </div>
+        <p className="font-black text-charcoal text-lg mt-2">{formatPrice(product.base_price)}</p>
       </div>
     </div>
   )
