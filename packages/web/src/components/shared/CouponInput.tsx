@@ -55,13 +55,13 @@ export default function CouponInput({ subtotal, onApply, onRemove, applied }: Pr
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="Enter coupon code"
-          className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           onKeyDown={(e) => e.key === "Enter" && handleApply()}
         />
         <button
           onClick={handleApply}
           disabled={validate.isPending || !code.trim()}
-          className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          className="px-4 py-2 bg-zinc-900 text-white text-sm rounded-lg hover:bg-zinc-800 disabled:opacity-50"
         >
           {validate.isPending ? "..." : "Apply"}
         </button>

@@ -46,21 +46,21 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Checkout</h1>
+      <h1 className="text-2xl font-bold text-zinc-900 mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left: Address + Coupon */}
         <div className="lg:col-span-2 space-y-6">
           {/* Address Selection */}
-          <div className="bg-white border rounded-xl p-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Shipping Address</h2>
+          <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm shadow-zinc-900/5 p-6">
+            <h2 className="font-semibold text-zinc-900 mb-4">Shipping Address</h2>
             {addresses && addresses.length > 0 ? (
               <div className="space-y-3">
                 {addresses.map((addr) => (
                   <label
                     key={addr.id}
                     className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                      selectedAddressId === addr.id ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300"
+                      selectedAddressId === addr.id ? "border-indigo-500 bg-indigo-50" : "border-zinc-200 hover:border-zinc-300"
                     }`}
                   >
                     <input
@@ -83,7 +83,7 @@ export default function CheckoutPage() {
 
             <button
               onClick={() => setShowAddAddress(!showAddAddress)}
-              className="mt-4 text-sm text-blue-600 hover:underline"
+              className="mt-4 text-sm text-indigo-600 hover:underline"
             >
               + Add new address
             </button>
@@ -103,12 +103,12 @@ export default function CheckoutPage() {
                     placeholder={placeholder}
                     value={(newAddr as Record<string, string>)[key]}
                     onChange={(e) => setNewAddr({ ...newAddr, [key]: e.target.value })}
-                    className={`border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${full ? "col-span-2" : ""}`}
+                    className={`border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${full ? "col-span-2" : ""}`}
                   />
                 ))}
                 <button
                   type="submit"
-                  className="col-span-2 bg-gray-900 text-white py-2 rounded-lg text-sm hover:bg-gray-800"
+                  className="col-span-2 bg-zinc-900 text-white py-2 rounded-lg text-sm hover:bg-zinc-800"
                 >
                   Save Address
                 </button>
@@ -117,8 +117,8 @@ export default function CheckoutPage() {
           </div>
 
           {/* Coupon */}
-          <div className="bg-white border rounded-xl p-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Coupon Code</h2>
+          <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm shadow-zinc-900/5 p-6">
+            <h2 className="font-semibold text-zinc-900 mb-4">Coupon Code</h2>
             <CouponInput
               subtotal={subtotal}
               applied={couponResult}
@@ -130,11 +130,11 @@ export default function CheckoutPage() {
 
         {/* Right: Order Summary */}
         <div>
-          <div className="bg-white border rounded-xl p-6 sticky top-24">
-            <h2 className="font-semibold text-gray-900 mb-4">Order Summary</h2>
+          <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm shadow-zinc-900/5 p-6 sticky top-24">
+            <h2 className="font-semibold text-zinc-900 mb-4">Order Summary</h2>
             <div className="space-y-2 text-sm mb-4">
               {cart?.items.map((item) => (
-                <div key={item.id} className="flex justify-between text-gray-600">
+                <div key={item.id} className="flex justify-between text-zinc-600">
                   <span className="truncate mr-2">{item.variant.name} ×{item.quantity}</span>
                   <span>{formatPrice(parseFloat(item.variant.price) * item.quantity)}</span>
                 </div>
@@ -142,7 +142,7 @@ export default function CheckoutPage() {
             </div>
             <div className="border-t pt-3 space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal</span>
+                <span className="text-zinc-600">Subtotal</span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
               {discount > 0 && (
@@ -160,7 +160,7 @@ export default function CheckoutPage() {
             <button
               onClick={handleSubmit}
               disabled={!selectedAddressId || placeOrder.isPending || !cart?.items.length}
-              className="w-full mt-6 flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              className="w-full mt-6 flex items-center justify-center gap-2 bg-zinc-900 text-white py-3 rounded-xl font-medium hover:bg-zinc-800 disabled:opacity-50 transition-colors"
             >
               {placeOrder.isPending ? "Placing order..." : (
                 <><CheckCircle size={18} /> Place Order</>

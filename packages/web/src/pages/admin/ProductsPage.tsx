@@ -59,7 +59,7 @@ export default function AdminProductsPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Products</h1>
+        <h1 className="text-2xl font-bold text-zinc-900">Products</h1>
         <Link
           to="/admin/products/new"
           className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
@@ -87,7 +87,7 @@ export default function AdminProductsPage() {
           <button
             type="button"
             onClick={() => { setSearch(""); setSearchInput(""); reset() }}
-            className="border px-4 py-2 rounded-lg text-sm hover:bg-gray-50"
+            className="border px-4 py-2 rounded-lg text-sm hover:bg-zinc-50"
           >
             Clear
           </button>
@@ -114,7 +114,7 @@ export default function AdminProductsPage() {
           </button>
           <button
             onClick={() => setSelected([])}
-            className="text-sm text-gray-500 hover:text-gray-700 ml-auto"
+            className="text-sm text-zinc-500 hover:text-zinc-700 ml-auto"
           >
             Clear
           </button>
@@ -122,70 +122,70 @@ export default function AdminProductsPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white border rounded-xl overflow-hidden">
+      <div className="bg-white border border-zinc-200 rounded-xl shadow-sm shadow-zinc-900/5 overflow-hidden">
         {isLoading ? (
           <div className="space-y-2 p-4">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 animate-pulse rounded" />
+              <div key={i} className="h-12 bg-zinc-100 animate-pulse rounded" />
             ))}
           </div>
         ) : !products || products.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-zinc-500">
             <p className="text-lg font-medium">No products found</p>
             <p className="text-sm mt-1">Try adjusting your search or create a new product.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
+              <thead className="bg-zinc-50 border-b">
                 <tr>
                   <th className="px-4 py-3 text-left">
                     <input
                       type="checkbox"
                       checked={!!allSelected}
                       onChange={toggleSelectAll}
-                      className="rounded border-gray-300"
+                      className="rounded border-zinc-300"
                     />
                   </th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Name</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Category</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Base Price</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Variants</th>
-                  <th className="px-4 py-3 text-center font-medium text-gray-600">Featured</th>
-                  <th className="px-4 py-3 text-center font-medium text-gray-600">Active</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-600">Actions</th>
+                  <th className="px-4 py-3 text-left font-medium text-zinc-600">Name</th>
+                  <th className="px-4 py-3 text-left font-medium text-zinc-600">Category</th>
+                  <th className="px-4 py-3 text-left font-medium text-zinc-600">Base Price</th>
+                  <th className="px-4 py-3 text-left font-medium text-zinc-600">Variants</th>
+                  <th className="px-4 py-3 text-center font-medium text-zinc-600">Featured</th>
+                  <th className="px-4 py-3 text-center font-medium text-zinc-600">Active</th>
+                  <th className="px-4 py-3 text-right font-medium text-zinc-600">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {products.map((product) => (
-                  <tr key={product.id} className="border-b last:border-0 hover:bg-gray-50">
+                  <tr key={product.id} className="border-b last:border-0 hover:bg-zinc-50">
                     <td className="px-4 py-3">
                       <input
                         type="checkbox"
                         checked={selected.includes(product.id)}
                         onChange={() => toggleSelect(product.id)}
-                        className="rounded border-gray-300"
+                        className="rounded border-zinc-300"
                       />
                     </td>
                     <td className="px-4 py-3">
-                      <div className="font-medium text-gray-900">{product.name}</div>
+                      <div className="font-medium text-zinc-900">{product.name}</div>
                       {product.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-1">
                           {product.tags.map((tag) => (
-                            <span key={tag.id} className="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
+                            <span key={tag.id} className="text-xs bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded">
                               {tag.name}
                             </span>
                           ))}
                         </div>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
-                      {product.category?.name ?? <span className="text-gray-400">—</span>}
+                    <td className="px-4 py-3 text-zinc-600">
+                      {product.category?.name ?? <span className="text-zinc-400">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-gray-900 font-medium">
+                    <td className="px-4 py-3 text-zinc-900 font-medium">
                       {formatPrice(product.base_price)}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3 text-zinc-600">
                       {product.variants.length}
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -197,7 +197,7 @@ export default function AdminProductsPage() {
                       >
                         <Star
                           size={18}
-                          className={product.is_featured ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
+                          className={product.is_featured ? "fill-yellow-400 text-yellow-400" : "text-zinc-300"}
                         />
                       </button>
                     </td>
@@ -206,7 +206,7 @@ export default function AdminProductsPage() {
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                           product.is_active
                             ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-500"
+                            : "bg-zinc-100 text-zinc-500"
                         }`}
                       >
                         {product.is_active ? "Active" : "Inactive"}
@@ -216,7 +216,7 @@ export default function AdminProductsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           to={`/admin/products/${product.id}`}
-                          className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                          className="p-1.5 text-zinc-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
                           title="Edit"
                         >
                           <Pencil size={15} />
@@ -224,7 +224,7 @@ export default function AdminProductsPage() {
                         <button
                           onClick={() => handleDelete(product.id, product.name)}
                           disabled={deleteProduct.isPending}
-                          className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                          className="p-1.5 text-zinc-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
                           title="Delete"
                         >
                           <Trash2 size={15} />

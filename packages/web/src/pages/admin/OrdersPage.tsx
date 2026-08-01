@@ -26,9 +26,9 @@ export default function AdminOrdersPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
+        <h1 className="text-2xl font-bold text-zinc-900">Orders</h1>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600">Filter by status:</label>
+          <label className="text-sm text-zinc-600">Filter by status:</label>
           <select
             value={statusFilter}
             onChange={(e) => {
@@ -47,15 +47,15 @@ export default function AdminOrdersPage() {
         </div>
       </div>
 
-      <div className="bg-white border rounded-xl overflow-hidden">
+      <div className="bg-white border border-zinc-200 rounded-xl shadow-sm shadow-zinc-900/5 overflow-hidden">
         {isLoading ? (
           <div className="space-y-2 p-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 animate-pulse rounded" />
+              <div key={i} className="h-12 bg-zinc-100 animate-pulse rounded" />
             ))}
           </div>
         ) : !orders || orders.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-zinc-500">
             <p className="font-medium">No orders found</p>
             <p className="text-sm mt-1">
               {statusFilter ? `No orders with status "${statusFilter}".` : "No orders yet."}
@@ -64,39 +64,39 @@ export default function AdminOrdersPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b">
+              <thead className="bg-zinc-50 border-b">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Order ID</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Date</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Customer</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-600">Items</th>
-                  <th className="px-4 py-3 text-right font-medium text-gray-600">Total</th>
-                  <th className="px-4 py-3 text-center font-medium text-gray-600">Status</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-600">Update Status</th>
+                  <th className="px-4 py-3 text-left font-medium text-zinc-600">Order ID</th>
+                  <th className="px-4 py-3 text-left font-medium text-zinc-600">Date</th>
+                  <th className="px-4 py-3 text-left font-medium text-zinc-600">Customer</th>
+                  <th className="px-4 py-3 text-right font-medium text-zinc-600">Items</th>
+                  <th className="px-4 py-3 text-right font-medium text-zinc-600">Total</th>
+                  <th className="px-4 py-3 text-center font-medium text-zinc-600">Status</th>
+                  <th className="px-4 py-3 text-left font-medium text-zinc-600">Update Status</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.map((order) => (
-                  <tr key={order.id} className="border-b last:border-0 hover:bg-gray-50">
+                  <tr key={order.id} className="border-b last:border-0 hover:bg-zinc-50">
                     <td className="px-4 py-3">
-                      <span className="font-mono text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
+                      <span className="font-mono text-xs text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded">
                         {order.id.slice(0, 8)}…
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                    <td className="px-4 py-3 text-zinc-600 whitespace-nowrap">
                       {formatDate(order.created_at)}
                     </td>
                     <td className="px-4 py-3">
                       {order.user_id ? (
-                        <span className="font-mono text-xs text-gray-500">{order.user_id.slice(0, 8)}…</span>
+                        <span className="font-mono text-xs text-zinc-500">{order.user_id.slice(0, 8)}…</span>
                       ) : (
-                        <span className="text-gray-400 text-xs">Guest</span>
+                        <span className="text-zinc-400 text-xs">Guest</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-right text-gray-700">
+                    <td className="px-4 py-3 text-right text-zinc-700">
                       {order.items.length}
                     </td>
-                    <td className="px-4 py-3 text-right font-semibold text-gray-900">
+                    <td className="px-4 py-3 text-right font-semibold text-zinc-900">
                       {formatPrice(order.total_amount)}
                     </td>
                     <td className="px-4 py-3 text-center">

@@ -63,7 +63,7 @@ export default function CategoriesPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
+        <h1 className="text-2xl font-bold text-zinc-900">Categories</h1>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
           className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
@@ -74,12 +74,12 @@ export default function CategoriesPage() {
 
       {/* Add Form */}
       {showAddForm && (
-        <div className="bg-white border rounded-xl p-5 space-y-4">
-          <h2 className="text-base font-semibold text-gray-800">New Category</h2>
+        <div className="bg-white border border-zinc-200 rounded-xl shadow-sm shadow-zinc-900/5 p-5 space-y-4">
+          <h2 className="text-base font-semibold text-zinc-800">New Category</h2>
           <form onSubmit={addForm.handleSubmit(handleCreate)} className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Name *</label>
+                <label className="block text-xs font-medium text-zinc-600 mb-1">Name *</label>
                 <input
                   {...addForm.register("name", { required: true })}
                   onChange={(e) => {
@@ -93,7 +93,7 @@ export default function CategoriesPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Slug *</label>
+                <label className="block text-xs font-medium text-zinc-600 mb-1">Slug *</label>
                 <input
                   {...addForm.register("slug", { required: true })}
                   className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
@@ -102,7 +102,7 @@ export default function CategoriesPage() {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+              <label className="block text-xs font-medium text-zinc-600 mb-1">Description</label>
               <input
                 {...addForm.register("description")}
                 className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
@@ -120,7 +120,7 @@ export default function CategoriesPage() {
               <button
                 type="button"
                 onClick={() => { setShowAddForm(false); addForm.reset() }}
-                className="border px-4 py-2 rounded-lg text-sm hover:bg-gray-50"
+                className="border px-4 py-2 rounded-lg text-sm hover:bg-zinc-50"
               >
                 Cancel
               </button>
@@ -130,49 +130,49 @@ export default function CategoriesPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white border rounded-xl overflow-hidden">
+      <div className="bg-white border border-zinc-200 rounded-xl shadow-sm shadow-zinc-900/5 overflow-hidden">
         {isLoading ? (
           <div className="space-y-2 p-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 animate-pulse rounded" />
+              <div key={i} className="h-12 bg-zinc-100 animate-pulse rounded" />
             ))}
           </div>
         ) : !categories || categories.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-zinc-500">
             <p className="font-medium">No categories yet</p>
             <p className="text-sm mt-1">Create your first category above.</p>
           </div>
         ) : (
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b">
+            <thead className="bg-zinc-50 border-b">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Name</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Slug</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Description</th>
-                <th className="px-4 py-3 text-right font-medium text-gray-600">Actions</th>
+                <th className="px-4 py-3 text-left font-medium text-zinc-600">Name</th>
+                <th className="px-4 py-3 text-left font-medium text-zinc-600">Slug</th>
+                <th className="px-4 py-3 text-left font-medium text-zinc-600">Description</th>
+                <th className="px-4 py-3 text-right font-medium text-zinc-600">Actions</th>
               </tr>
             </thead>
             <tbody>
               {categories.map((cat) => (
                 <>
-                  <tr key={cat.id} className="border-b last:border-0 hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-gray-900">{cat.name}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-gray-500">{cat.slug}</td>
-                    <td className="px-4 py-3 text-gray-600">
-                      {cat.description ?? <span className="text-gray-400">—</span>}
+                  <tr key={cat.id} className="border-b last:border-0 hover:bg-zinc-50">
+                    <td className="px-4 py-3 font-medium text-zinc-900">{cat.name}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-zinc-500">{cat.slug}</td>
+                    <td className="px-4 py-3 text-zinc-600">
+                      {cat.description ?? <span className="text-zinc-400">—</span>}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(cat)}
-                          className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                          className="p-1.5 text-zinc-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
                         >
                           <Pencil size={14} />
                         </button>
                         <button
                           onClick={() => handleDelete(cat.id, cat.name)}
                           disabled={deleteCategory.isPending}
-                          className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                          className="p-1.5 text-zinc-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -184,21 +184,21 @@ export default function CategoriesPage() {
                       <td colSpan={4} className="px-4 py-3">
                         <form onSubmit={editForm.handleSubmit(handleUpdate)} className="flex flex-wrap gap-3 items-end">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Name</label>
+                            <label className="block text-xs font-medium text-zinc-600 mb-1">Name</label>
                             <input
                               {...editForm.register("name", { required: true })}
                               className="border rounded px-2 py-1.5 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-indigo-300"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Slug</label>
+                            <label className="block text-xs font-medium text-zinc-600 mb-1">Slug</label>
                             <input
                               {...editForm.register("slug", { required: true })}
                               className="border rounded px-2 py-1.5 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-indigo-300"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                            <label className="block text-xs font-medium text-zinc-600 mb-1">Description</label>
                             <input
                               {...editForm.register("description")}
                               className="border rounded px-2 py-1.5 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-indigo-300"
@@ -215,7 +215,7 @@ export default function CategoriesPage() {
                             <button
                               type="button"
                               onClick={() => setEditingId(null)}
-                              className="p-1.5 border rounded hover:bg-gray-100"
+                              className="p-1.5 border rounded hover:bg-zinc-100"
                             >
                               <X size={14} />
                             </button>

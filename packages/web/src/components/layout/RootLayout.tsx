@@ -5,7 +5,7 @@ import DevToolbar from "@/components/dev/DevToolbar"
 
 export default function RootLayout() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header />
       <main className="flex-1">
         <Outlet />
