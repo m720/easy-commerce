@@ -29,10 +29,10 @@ export default function ProductDetailPage() {
     return (
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="animate-pulse grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="aspect-square bg-zinc-200 rounded-xl" />
+          <div className="aspect-square bg-sage/30 rounded-xl" />
           <div className="space-y-4">
-            <div className="h-8 bg-zinc-200 rounded w-3/4" />
-            <div className="h-4 bg-zinc-200 rounded w-1/2" />
+            <div className="h-8 bg-sage/30 rounded w-3/4" />
+            <div className="h-4 bg-sage/30 rounded w-1/2" />
           </div>
         </div>
       </div>
@@ -61,20 +61,20 @@ export default function ProductDetailPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-700 mb-6">
+      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-charcoal/70 hover:text-charcoal/80 mb-6">
         <ArrowLeft size={16} /> Back
       </button>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Images */}
         <div>
-          <div className="aspect-square bg-zinc-100 rounded-xl overflow-hidden mb-3">
+          <div className="aspect-square bg-sage/20 rounded-xl overflow-hidden mb-3">
             {images[activeImage]?.url ? (
               <img src={images[activeImage].url!} alt={product.name} className="w-full h-full object-cover" />
             ) : primaryImage?.url ? (
               <img src={primaryImage.url} alt={product.name} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-zinc-400">No image</div>
+              <div className="w-full h-full flex items-center justify-center text-charcoal/70">No image</div>
             )}
           </div>
           {images.length > 1 && (
@@ -83,7 +83,7 @@ export default function ProductDetailPage() {
                 <button
                   key={img.id}
                   onClick={() => setActiveImage(i)}
-                  className={`flex-none w-16 h-16 rounded-lg overflow-hidden border-2 ${i === activeImage ? "border-indigo-500" : "border-transparent"}`}
+                  className={`flex-none w-16 h-16 rounded-lg overflow-hidden border-2 ${i === activeImage ? "border-brand" : "border-transparent"}`}
                 >
                   {img.url && <img src={img.url} alt="" className="w-full h-full object-cover" />}
                 </button>
@@ -95,21 +95,21 @@ export default function ProductDetailPage() {
         {/* Info */}
         <div className="space-y-4">
           <div>
-            {product.category && <p className="text-sm text-indigo-600 font-medium">{product.category.name}</p>}
-            <h1 className="text-3xl font-bold text-zinc-900 mt-1">{product.name}</h1>
+            {product.category && <p className="text-sm text-brand font-medium">{product.category.name}</p>}
+            <h1 className="text-3xl font-bold text-charcoal mt-1">{product.name}</h1>
           </div>
 
-          <div className="text-3xl font-bold text-zinc-900">{formatPrice(price)}</div>
+          <div className="text-3xl font-bold text-charcoal">{formatPrice(price)}</div>
 
           {product.description && (
-            <p className="text-zinc-600 leading-relaxed">{product.description}</p>
+            <p className="text-charcoal/70 leading-relaxed">{product.description}</p>
           )}
 
           {/* Tags */}
           {product.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {product.tags.map((tag) => (
-                <span key={tag.id} className="text-xs bg-zinc-100 text-zinc-600 px-2.5 py-1 rounded-full">{tag.name}</span>
+                <span key={tag.id} className="text-xs bg-sage/20 text-charcoal/70 px-2.5 py-1 rounded-full">{tag.name}</span>
               ))}
             </div>
           )}
@@ -117,7 +117,7 @@ export default function ProductDetailPage() {
           {/* Variants */}
           {product.variants.length > 0 && (
             <div>
-              <p className="text-sm font-medium text-zinc-700 mb-2">Select variant:</p>
+              <p className="text-sm font-medium text-charcoal/80 mb-2">Select variant:</p>
               <div className="flex flex-wrap gap-2">
                 {product.variants.map((v) => (
                   <button
@@ -126,10 +126,10 @@ export default function ProductDetailPage() {
                     disabled={v.stock_quantity === 0}
                     className={`px-4 py-2 border rounded-lg text-sm transition-all ${
                       variant?.id === v.id
-                        ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                        ? "border-brand bg-brand/10 text-brand"
                         : v.stock_quantity === 0
-                        ? "border-zinc-200 text-zinc-300 cursor-not-allowed"
-                        : "border-zinc-200 hover:border-zinc-400"
+                        ? "border-sage/30 text-sage cursor-not-allowed"
+                        : "border-sage/30 hover:border-sage"
                     }`}
                   >
                     {v.name}
@@ -145,7 +145,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleAddToCart}
               disabled={addToCart.isPending || (variant !== null && variant.stock_quantity === 0)}
-              className="flex-1 flex items-center justify-center gap-2 bg-zinc-900 text-white py-3 rounded-xl font-medium hover:bg-zinc-800 disabled:opacity-50 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 bg-brand text-white py-3 rounded-xl font-medium hover:bg-brand/90 disabled:opacity-50 transition-colors"
             >
               <ShoppingCart size={18} />
               {addToCart.isPending ? "Adding..." : "Add to Cart"}
@@ -155,7 +155,7 @@ export default function ProductDetailPage() {
                 onClick={() => addToWishlist.mutate(product.id)}
                 className="p-3 border rounded-xl hover:bg-red-50 hover:border-red-200 transition-colors"
               >
-                <Heart size={20} className="text-zinc-600" />
+                <Heart size={20} className="text-charcoal/70" />
               </button>
             )}
           </div>
@@ -164,22 +164,22 @@ export default function ProductDetailPage() {
 
       {/* Reviews */}
       <div className="mt-16">
-        <h2 className="text-xl font-bold text-zinc-900 mb-6">
+        <h2 className="text-xl font-bold text-charcoal mb-6">
           Reviews ({reviews?.length ?? 0})
         </h2>
 
         {token && (
-          <form onSubmit={handleSubmitReview} className="bg-white border border-zinc-200 rounded-2xl shadow-sm shadow-zinc-900/5 p-6 mb-8">
-            <h3 className="font-medium text-zinc-900 mb-4">Write a review</h3>
+          <form onSubmit={handleSubmitReview} className="bg-white border border-sage/30 rounded-card shadow-soft p-6 mb-8">
+            <h3 className="font-medium text-charcoal mb-4">Write a review</h3>
             <div className="mb-4">
-              <p className="text-sm text-zinc-700 mb-2">Rating</p>
+              <p className="text-sm text-charcoal/80 mb-2">Rating</p>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((r) => (
                   <button
                     key={r}
                     type="button"
                     onClick={() => setReviewRating(r)}
-                    className={`text-2xl transition-colors ${r <= reviewRating ? "text-yellow-400" : "text-zinc-300"}`}
+                    className={`text-2xl transition-colors ${r <= reviewRating ? "text-yellow-400" : "text-sage"}`}
                   >
                     ★
                   </button>
@@ -191,12 +191,12 @@ export default function ProductDetailPage() {
               onChange={(e) => setReviewComment(e.target.value)}
               placeholder="Share your thoughts..."
               rows={3}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand resize-none"
             />
             <button
               type="submit"
               disabled={createReview.isPending}
-              className="mt-3 bg-zinc-900 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-zinc-800 disabled:opacity-60"
+              className="mt-3 bg-brand text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-brand/90 disabled:opacity-60"
             >
               {createReview.isPending ? "Submitting..." : "Submit Review"}
             </button>
@@ -205,16 +205,16 @@ export default function ProductDetailPage() {
 
         <div className="space-y-4">
           {reviews?.map((review) => (
-            <div key={review.id} className="bg-white border border-zinc-200 rounded-2xl shadow-sm shadow-zinc-900/5 p-5">
+            <div key={review.id} className="bg-white border border-sage/30 rounded-card shadow-soft p-5">
               <div className="flex items-center gap-3 mb-2">
                 <ReviewStars rating={review.rating} />
-                <span className="text-xs text-zinc-400">{formatDate(review.created_at)}</span>
+                <span className="text-xs text-charcoal/70">{formatDate(review.created_at)}</span>
               </div>
-              {review.comment && <p className="text-zinc-700 text-sm">{review.comment}</p>}
+              {review.comment && <p className="text-charcoal/80 text-sm">{review.comment}</p>}
             </div>
           ))}
           {reviews?.length === 0 && (
-            <p className="text-zinc-500 text-sm">No reviews yet. Be the first to review!</p>
+            <p className="text-charcoal/70 text-sm">No reviews yet. Be the first to review!</p>
           )}
         </div>
       </div>

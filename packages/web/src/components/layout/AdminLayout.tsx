@@ -3,7 +3,7 @@ import AdminSidebar from "./AdminSidebar"
 
 export default function AdminLayout() {
   return (
-    <div className="flex min-h-screen bg-zinc-50">
+    <div className="flex min-h-screen bg-cream">
       <AdminSidebar />
       <div className="flex-1 overflow-auto">
         <Outlet />

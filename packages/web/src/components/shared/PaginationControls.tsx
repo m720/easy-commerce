@@ -14,15 +14,15 @@ export default function PaginationControls({ page, onPrev, onNext, hasPrev, hasN
       <button
         onClick={onPrev}
         disabled={!hasPrev}
-        className="flex items-center gap-1 px-4 py-2 text-sm border rounded-lg disabled:opacity-40 hover:bg-zinc-50 transition-colors"
+        className="flex items-center gap-1 px-4 py-2 text-sm border rounded-lg disabled:opacity-40 hover:bg-cream transition-colors"
       >
         <ChevronLeft size={16} /> Prev
       </button>
-      <span className="text-sm text-zinc-600">Page {page}</span>
+      <span className="text-sm text-charcoal/70">Page {page}</span>
       <button
         onClick={onNext}
         disabled={!hasNext}
-        className="flex items-center gap-1 px-4 py-2 text-sm border rounded-lg disabled:opacity-40 hover:bg-zinc-50 transition-colors"
+        className="flex items-center gap-1 px-4 py-2 text-sm border rounded-lg disabled:opacity-40 hover:bg-cream transition-colors"
       >
         Next <ChevronRight size={16} />
       </button>

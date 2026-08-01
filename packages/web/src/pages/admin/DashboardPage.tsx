@@ -21,8 +21,8 @@ export default function DashboardPage() {
       label: "Total Orders",
       value: summaryLoading ? null : totalOrders.toString(),
       icon: ShoppingBag,
-      color: "text-indigo-600",
-      bg: "bg-indigo-50",
+      color: "text-brand",
+      bg: "bg-brand/10",
     },
     {
       label: "Total Users",
@@ -43,10 +43,10 @@ export default function DashboardPage() {
   return (
     <div className="p-6 space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-zinc-900">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-charcoal">Dashboard</h1>
         <Link
           to="/admin/analytics"
-          className="text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline"
+          className="text-sm font-medium text-brand hover:text-brand hover:underline"
         >
           View Full Analytics →
         </Link>
@@ -55,16 +55,16 @@ export default function DashboardPage() {
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card) => (
-          <div key={card.label} className="bg-white border border-zinc-200 rounded-xl shadow-sm shadow-zinc-900/5 p-5 flex items-center gap-4">
+          <div key={card.label} className="bg-white border border-sage/30 rounded-nested shadow-soft p-5 flex items-center gap-4">
             <div className={`${card.bg} p-3 rounded-lg`}>
               <card.icon className={`${card.color} w-6 h-6`} />
             </div>
             <div>
-              <p className="text-sm text-zinc-500">{card.label}</p>
+              <p className="text-sm text-charcoal/70">{card.label}</p>
               {card.value === null ? (
-                <div className="h-6 w-24 bg-zinc-200 animate-pulse rounded mt-1" />
+                <div className="h-6 w-24 bg-sage/30 animate-pulse rounded mt-1" />
               ) : (
-                <p className="text-xl font-bold text-zinc-900">{card.value}</p>
+                <p className="text-xl font-bold text-charcoal">{card.value}</p>
               )}
             </div>
           </div>
@@ -72,20 +72,20 @@ export default function DashboardPage() {
       </div>
 
       {/* Orders by Status */}
-      <div className="bg-white border border-zinc-200 rounded-xl shadow-sm shadow-zinc-900/5 p-5">
-        <h2 className="text-lg font-semibold text-zinc-900 mb-4">Orders by Status</h2>
+      <div className="bg-white border border-sage/30 rounded-nested shadow-soft p-5">
+        <h2 className="text-lg font-semibold text-charcoal mb-4">Orders by Status</h2>
         {summaryLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-16 bg-zinc-100 animate-pulse rounded-lg" />
+              <div key={i} className="h-16 bg-sage/20 animate-pulse rounded-lg" />
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {summary?.orders_by_status?.map((s) => (
-              <div key={s.status} className="bg-zinc-50 rounded-lg p-3 text-center">
-                <p className="text-2xl font-bold text-zinc-900">{s.count}</p>
-                <p className="text-xs text-zinc-500 capitalize mt-1">{s.status}</p>
+              <div key={s.status} className="bg-cream rounded-lg p-3 text-center">
+                <p className="text-2xl font-bold text-charcoal">{s.count}</p>
+                <p className="text-xs text-charcoal/70 capitalize mt-1">{s.status}</p>
               </div>
             ))}
           </div>
@@ -93,24 +93,24 @@ export default function DashboardPage() {
       </div>
 
       {/* Low Stock Table */}
-      <div className="bg-white border border-zinc-200 rounded-xl shadow-sm shadow-zinc-900/5 p-5">
+      <div className="bg-white border border-sage/30 rounded-nested shadow-soft p-5">
         <div className="flex items-center gap-2 mb-4">
           <AlertTriangle className="text-amber-500 w-5 h-5" />
-          <h2 className="text-lg font-semibold text-zinc-900">Low Stock Alerts</h2>
+          <h2 className="text-lg font-semibold text-charcoal">Low Stock Alerts</h2>
         </div>
         {lowStockLoading ? (
           <div className="space-y-2">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-10 bg-zinc-100 animate-pulse rounded" />
+              <div key={i} className="h-10 bg-sage/20 animate-pulse rounded" />
             ))}
           </div>
         ) : !lowStock || lowStock.length === 0 ? (
-          <p className="text-sm text-zinc-500 py-4 text-center">No low stock items. Everything looks good!</p>
+          <p className="text-sm text-charcoal/70 py-4 text-center">No low stock items. Everything looks good!</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-zinc-500">
+                <tr className="border-b text-left text-charcoal/70">
                   <th className="pb-2 pr-4 font-medium">SKU</th>
                   <th className="pb-2 pr-4 font-medium">Name</th>
                   <th className="pb-2 pr-4 font-medium text-right">In Stock</th>
@@ -120,10 +120,10 @@ export default function DashboardPage() {
               <tbody>
                 {lowStock.map((item) => (
                   <tr key={item.variant_id} className="border-b last:border-0">
-                    <td className="py-2 pr-4 font-mono text-xs text-zinc-600">{item.sku}</td>
-                    <td className="py-2 pr-4 text-zinc-900">{item.name}</td>
+                    <td className="py-2 pr-4 font-mono text-xs text-charcoal/70">{item.sku}</td>
+                    <td className="py-2 pr-4 text-charcoal">{item.name}</td>
                     <td className="py-2 pr-4 text-right font-semibold text-amber-600">{item.stock_quantity}</td>
-                    <td className="py-2 text-right text-zinc-500">{item.low_stock_threshold}</td>
+                    <td className="py-2 text-right text-charcoal/70">{item.low_stock_threshold}</td>
                   </tr>
                 ))}
               </tbody>

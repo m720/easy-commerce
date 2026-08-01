@@ -19,9 +19,9 @@ const links = [
 
 export default function AdminSidebar() {
   return (
-    <aside className="w-64 shrink-0 min-h-screen bg-zinc-950 text-zinc-400 flex flex-col">
-      <div className="px-5 py-5 border-b border-zinc-800">
-        <span className="text-white font-bold text-lg tracking-tight">Admin Panel</span>
+    <aside className="w-64 shrink-0 min-h-screen bg-charcoal text-sage flex flex-col">
+      <div className="px-5 py-5 border-b border-sage/20">
+        <span className="text-white font-black text-lg tracking-tight">Admin Panel</span>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-0.5">
         {links.map(({ to, label, icon: Icon, end }) => (
@@ -31,10 +31,10 @@ export default function AdminSidebar() {
             end={end}
             className={({ isActive }) =>
               cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                "flex items-center gap-3 px-3 py-2 rounded-nested text-sm font-bold transition-colors",
                 isActive
-                  ? "bg-indigo-600 text-white"
-                  : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                  ? "bg-cream text-charcoal"
+                  : "text-sage hover:bg-white/5 hover:text-white"
               )
             }
           >
@@ -43,8 +43,8 @@ export default function AdminSidebar() {
           </NavLink>
         ))}
       </nav>
-      <div className="px-3 py-4 border-t border-zinc-800">
-        <Link to="/" className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors">
+      <div className="px-3 py-4 border-t border-sage/20">
+        <Link to="/" className="flex items-center gap-3 px-3 py-2 rounded-nested text-sm font-bold text-sage hover:bg-white/5 hover:text-white transition-colors">
           <ArrowLeft size={17} />
           Back to store
         </Link>

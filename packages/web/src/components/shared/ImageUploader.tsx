@@ -68,10 +68,10 @@ export default function ImageUploader({ productId, images }: Props) {
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => inputRef.current?.click()}
-        className="border-2 border-dashed border-zinc-300 rounded-lg p-8 text-center cursor-pointer hover:border-indigo-400 transition-colors"
+        className="border-2 border-dashed border-sage/40 rounded-lg p-8 text-center cursor-pointer hover:border-brand transition-colors"
       >
-        <Upload size={24} className="mx-auto text-zinc-400 mb-2" />
-        <p className="text-sm text-zinc-600">
+        <Upload size={24} className="mx-auto text-charcoal/70 mb-2" />
+        <p className="text-sm text-charcoal/70">
           {uploading ? "Uploading..." : "Click or drag to upload image"}
         </p>
         <input ref={inputRef} type="file" accept="image/*" onChange={handleInputChange} className="hidden" />

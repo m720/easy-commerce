@@ -59,29 +59,29 @@ export default function ProductListPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900">All Products</h1>
+        <h1 className="text-2xl font-bold text-charcoal">All Products</h1>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 border rounded-lg px-3 py-1.5"
+          className="flex items-center gap-2 text-sm text-charcoal/70 hover:text-charcoal border rounded-lg px-3 py-1.5"
         >
           <SlidersHorizontal size={16} />
           Filters
-          {hasFilters && <span className="bg-zinc-900 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">!</span>}
+          {hasFilters && <span className="bg-brand text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">!</span>}
         </button>
       </div>
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-charcoal/70" />
         <input
           type="text"
           value={search}
           onChange={(e) => { setSearch(e.target.value); reset() }}
           placeholder="Search products..."
-          className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand"
         />
         {search && (
-          <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600">
+          <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-charcoal/70 hover:text-charcoal/70">
             <X size={16} />
           </button>
         )}
@@ -89,9 +89,9 @@ export default function ProductListPage() {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm shadow-zinc-900/5 p-4 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white border border-sage/30 rounded-card shadow-soft p-4 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-xs font-medium text-zinc-700 mb-1">Category</label>
+            <label className="block text-xs font-medium text-charcoal/80 mb-1">Category</label>
             <select
               value={categoryId ?? ""}
               onChange={(e) => { setCategoryId(e.target.value ? Number(e.target.value) : undefined); reset() }}
@@ -102,7 +102,7 @@ export default function ProductListPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-zinc-700 mb-1">Tag</label>
+            <label className="block text-xs font-medium text-charcoal/80 mb-1">Tag</label>
             <select
               value={tagId ?? ""}
               onChange={(e) => { setTagId(e.target.value ? Number(e.target.value) : undefined); reset() }}
@@ -113,7 +113,7 @@ export default function ProductListPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-zinc-700 mb-1">Min Price</label>
+            <label className="block text-xs font-medium text-charcoal/80 mb-1">Min Price</label>
             <input
               type="number"
               value={minPrice ?? ""}
@@ -123,7 +123,7 @@ export default function ProductListPage() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-zinc-700 mb-1">Max Price</label>
+            <label className="block text-xs font-medium text-charcoal/80 mb-1">Max Price</label>
             <input
               type="number"
               value={maxPrice ?? ""}
@@ -144,13 +144,13 @@ export default function ProductListPage() {
       {isLoading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="bg-zinc-100 rounded-xl aspect-square animate-pulse" />
+            <div key={i} className="bg-sage/20 rounded-xl aspect-square animate-pulse" />
           ))}
         </div>
       ) : products?.length === 0 ? (
-        <div className="text-center py-16 text-zinc-500">
+        <div className="text-center py-16 text-charcoal/70">
           <p className="text-lg">No products found</p>
-          {hasFilters && <button onClick={clearFilters} className="mt-2 text-indigo-600 hover:underline text-sm">Clear filters</button>}
+          {hasFilters && <button onClick={clearFilters} className="mt-2 text-brand hover:underline text-sm">Clear filters</button>}
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

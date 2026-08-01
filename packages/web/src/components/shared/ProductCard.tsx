@@ -18,9 +18,9 @@ export default function ProductCard({ product }: Props) {
   const inWishlist = wishlist?.items.some((i) => i.product_id === product.id)
 
   return (
-    <div className="bg-white rounded-2xl border border-zinc-200 overflow-hidden hover:shadow-lg hover:shadow-zinc-900/5 hover:-translate-y-0.5 transition-all duration-300 group">
+    <div className="bg-white rounded-card border border-sage/30 overflow-hidden hover:shadow-soft hover:-translate-y-0.5 transition-all duration-300 group">
       <Link to={`/products/${product.id}`} className="block relative">
-        <div className="aspect-square bg-zinc-100 overflow-hidden">
+        <div className="aspect-square bg-sage/20 overflow-hidden">
           {primaryImage?.url ? (
             <img
               src={primaryImage.url}
@@ -28,19 +28,19 @@ export default function ProductCard({ product }: Props) {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-zinc-400 text-sm">No image</div>
+            <div className="w-full h-full flex items-center justify-center text-charcoal/70 text-sm">No image</div>
           )}
         </div>
         {product.is_featured && (
-          <span className="absolute top-2.5 left-2.5 bg-zinc-900 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">Featured</span>
+          <span className="absolute top-2.5 left-2.5 bg-charcoal text-white label-xs px-3 py-1.5 rounded-full">Featured</span>
         )}
         {!product.is_active && (
-          <span className="absolute top-2.5 right-2.5 bg-zinc-500 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">Inactive</span>
+          <span className="absolute top-2.5 right-2.5 bg-sage text-charcoal label-xs px-3 py-1.5 rounded-full">Inactive</span>
         )}
         {token && (
           <button
             onClick={(e) => { e.preventDefault(); addToWishlist.mutate(product.id) }}
-            className={`absolute bottom-2.5 right-2.5 p-2 rounded-full shadow-sm transition-colors ${inWishlist ? "text-red-500 bg-white" : "text-zinc-500 bg-white/90 hover:text-red-500"}`}
+            className={`absolute bottom-2.5 right-2.5 p-2 rounded-full shadow-sm transition-colors ${inWishlist ? "text-brand bg-white" : "text-charcoal/70 bg-white/90 hover:text-brand"}`}
             disabled={addToWishlist.isPending}
           >
             <Heart size={15} fill={inWishlist ? "currentColor" : "none"} />
@@ -50,12 +50,12 @@ export default function ProductCard({ product }: Props) {
 
       <div className="p-4">
         <Link to={`/products/${product.id}`}>
-          <h3 className="text-sm font-medium text-zinc-900 truncate hover:text-indigo-600 transition-colors">{product.name}</h3>
+          <h3 className="text-sm font-bold text-charcoal truncate hover:text-brand transition-colors">{product.name}</h3>
         </Link>
         {product.category && (
-          <p className="text-xs text-zinc-500 mt-0.5">{product.category.name}</p>
+          <p className="text-xs text-charcoal/70 mt-0.5">{product.category.name}</p>
         )}
-        <p className="font-bold text-zinc-900 mt-2">{formatPrice(product.base_price)}</p>
+        <p className="font-black text-charcoal text-lg mt-2">{formatPrice(product.base_price)}</p>
       </div>
     </div>
   )

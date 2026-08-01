@@ -50,10 +50,10 @@ export default function TagsPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-zinc-900">Tags</h1>
+        <h1 className="text-2xl font-bold text-charcoal">Tags</h1>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="inline-flex items-center gap-2 bg-brand text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand transition-colors"
         >
           <Plus size={16} /> Add Tag
         </button>
@@ -61,11 +61,11 @@ export default function TagsPage() {
 
       {/* Add Form */}
       {showAddForm && (
-        <div className="bg-white border border-zinc-200 rounded-xl shadow-sm shadow-zinc-900/5 p-5 space-y-4">
-          <h2 className="text-base font-semibold text-zinc-800">New Tag</h2>
+        <div className="bg-white border border-sage/30 rounded-nested shadow-soft p-5 space-y-4">
+          <h2 className="text-base font-semibold text-charcoal">New Tag</h2>
           <form onSubmit={addForm.handleSubmit(handleCreate)} className="flex flex-wrap gap-3 items-end">
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Name *</label>
+              <label className="block text-xs font-medium text-charcoal/70 mb-1">Name *</label>
               <input
                 {...addForm.register("name", { required: true })}
                 onChange={(e) => {
@@ -74,15 +74,15 @@ export default function TagsPage() {
                     addForm.setValue("slug", slugify(e.target.value))
                   }
                 }}
-                className="border rounded-lg px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="border rounded-lg px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-brand/40"
                 placeholder="e.g. New Arrivals"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Slug *</label>
+              <label className="block text-xs font-medium text-charcoal/70 mb-1">Slug *</label>
               <input
                 {...addForm.register("slug", { required: true })}
-                className="border rounded-lg px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="border rounded-lg px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-brand/40"
                 placeholder="e.g. new-arrivals"
               />
             </div>
@@ -90,14 +90,14 @@ export default function TagsPage() {
               <button
                 type="submit"
                 disabled={addForm.formState.isSubmitting}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+                className="bg-brand text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand disabled:opacity-50"
               >
                 Create
               </button>
               <button
                 type="button"
                 onClick={() => { setShowAddForm(false); addForm.reset() }}
-                className="border px-4 py-2 rounded-lg text-sm hover:bg-zinc-50"
+                className="border px-4 py-2 rounded-lg text-sm hover:bg-cream"
               >
                 Cancel
               </button>
@@ -107,45 +107,45 @@ export default function TagsPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white border border-zinc-200 rounded-xl shadow-sm shadow-zinc-900/5 overflow-hidden">
+      <div className="bg-white border border-sage/30 rounded-nested shadow-soft overflow-hidden">
         {isLoading ? (
           <div className="space-y-2 p-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-10 bg-zinc-100 animate-pulse rounded" />
+              <div key={i} className="h-10 bg-sage/20 animate-pulse rounded" />
             ))}
           </div>
         ) : !tags || tags.length === 0 ? (
-          <div className="text-center py-12 text-zinc-500">
+          <div className="text-center py-12 text-charcoal/70">
             <p className="font-medium">No tags yet</p>
             <p className="text-sm mt-1">Create your first tag above.</p>
           </div>
         ) : (
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 border-b">
+            <thead className="bg-cream border-b">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-zinc-600">Name</th>
-                <th className="px-4 py-3 text-left font-medium text-zinc-600">Slug</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-600">Actions</th>
+                <th className="px-4 py-3 text-left font-medium text-charcoal/70">Name</th>
+                <th className="px-4 py-3 text-left font-medium text-charcoal/70">Slug</th>
+                <th className="px-4 py-3 text-right font-medium text-charcoal/70">Actions</th>
               </tr>
             </thead>
             <tbody>
               {tags.map((tag) => (
                 <>
-                  <tr key={tag.id} className="border-b last:border-0 hover:bg-zinc-50">
-                    <td className="px-4 py-3 font-medium text-zinc-900">{tag.name}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-zinc-500">{tag.slug}</td>
+                  <tr key={tag.id} className="border-b last:border-0 hover:bg-cream">
+                    <td className="px-4 py-3 font-medium text-charcoal">{tag.name}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-charcoal/70">{tag.slug}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(tag)}
-                          className="p-1.5 text-zinc-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors"
+                          className="p-1.5 text-charcoal/70 hover:text-brand hover:bg-brand/10 rounded transition-colors"
                         >
                           <Pencil size={14} />
                         </button>
                         <button
                           onClick={() => handleDelete(tag.id, tag.name)}
                           disabled={deleteTag.isPending}
-                          className="p-1.5 text-zinc-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                          className="p-1.5 text-charcoal/70 hover:text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -153,35 +153,35 @@ export default function TagsPage() {
                     </td>
                   </tr>
                   {editingId === tag.id && (
-                    <tr key={`edit-${tag.id}`} className="bg-indigo-50 border-b">
+                    <tr key={`edit-${tag.id}`} className="bg-brand/10 border-b">
                       <td colSpan={3} className="px-4 py-3">
                         <form onSubmit={editForm.handleSubmit(handleUpdate)} className="flex flex-wrap gap-3 items-end">
                           <div>
-                            <label className="block text-xs font-medium text-zinc-600 mb-1">Name</label>
+                            <label className="block text-xs font-medium text-charcoal/70 mb-1">Name</label>
                             <input
                               {...editForm.register("name", { required: true })}
-                              className="border rounded px-2 py-1.5 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                              className="border rounded px-2 py-1.5 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-brand/40"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-zinc-600 mb-1">Slug</label>
+                            <label className="block text-xs font-medium text-charcoal/70 mb-1">Slug</label>
                             <input
                               {...editForm.register("slug", { required: true })}
-                              className="border rounded px-2 py-1.5 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                              className="border rounded px-2 py-1.5 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-brand/40"
                             />
                           </div>
                           <div className="flex gap-2">
                             <button
                               type="submit"
                               disabled={editForm.formState.isSubmitting}
-                              className="p-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50"
+                              className="p-1.5 bg-brand text-white rounded hover:bg-brand disabled:opacity-50"
                             >
                               <Check size={14} />
                             </button>
                             <button
                               type="button"
                               onClick={() => setEditingId(null)}
-                              className="p-1.5 border rounded hover:bg-zinc-100"
+                              className="p-1.5 border rounded hover:bg-sage/20"
                             >
                               <X size={14} />
                             </button>
