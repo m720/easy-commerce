@@ -1,22 +1,55 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user
+from app.core import rate_limit
+from app.core.logging import get_logger
 from app.schemas.auth import UserRegister, UserLogin, TokenResponse, UserResponse, UserUpdate, PasswordChange
 from app.services.auth_service import register_user, login_user
 from app.core.security import hash_password, verify_password
-from fastapi import HTTPException
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-
-@router.post("/register", response_model=UserResponse, status_code=201)
-def register(data: UserRegister, db: Session = Depends(get_db)):
-    return register_user(data, db)
+logger = get_logger("app.auth")
 
 
-@router.post("/login", response_model=TokenResponse)
-def login(data: UserLogin, db: Session = Depends(get_db)):
-    token = login_user(data, db)
+@router.post(
+    "/register",
+    response_model=UserResponse,
+    status_code=201,
+    dependencies=[Depends(rate_limit.register_ip_limiter)],
+)
+def register(data: UserRegister, request: Request, db: Session = Depends(get_db)):
+    user = register_user(data, db)
+    logger.info(
+        "user registered",
+        extra={"registered_user_id": str(user.id), "client_ip": rate_limit.client_identity(request)},
+    )
+    return user
+
+
+@router.post(
+    "/login",
+    response_model=TokenResponse,
+    dependencies=[Depends(rate_limit.login_ip_limiter)],
+)
+def login(data: UserLogin, request: Request, db: Session = Depends(get_db)):
+    # Two budgets guard this endpoint. The IP limit (applied as a dependency
+    # above) stops one host spraying many accounts; this per-account limit stops
+    # a distributed attempt from spraying one account from many hosts.
+    rate_limit.login_account_limiter.check_identity(data.email.lower())
+
+    try:
+        token = login_user(data, db)
+    except HTTPException:
+        # Deliberately no email in the log message body — the structured field
+        # is enough to correlate, and log lines get shipped off-box.
+        logger.warning(
+            "login failed",
+            extra={"client_ip": rate_limit.client_identity(request), "email_attempted": data.email},
+        )
+        raise
+
+    logger.info("login succeeded", extra={"client_ip": rate_limit.client_identity(request)})
     return {"access_token": token}
 
 
@@ -39,9 +72,17 @@ def update_me(data: UserUpdate, current_user=Depends(get_current_user), db: Sess
     return current_user
 
 
-@router.put("/me/password", status_code=204)
+@router.put(
+    "/me/password",
+    status_code=204,
+    dependencies=[Depends(rate_limit.password_change_limiter)],
+)
 def change_password(data: PasswordChange, current_user=Depends(get_current_user), db: Session = Depends(get_db)):
+    # Rate limited for the same reason as login: this endpoint also verifies a
+    # password, so it is an oracle for guessing one.
     if not verify_password(data.current_password, current_user.hashed_password):
+        logger.warning("password change rejected", extra={"reason": "wrong_current_password"})
         raise HTTPException(status_code=400, detail="Current password is incorrect")
     current_user.hashed_password = hash_password(data.new_password)
     db.commit()
+    logger.info("password changed")

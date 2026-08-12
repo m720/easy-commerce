@@ -1,0 +1,88 @@
+# Alerts are deliberately few. Every rule here should be worth waking someone
+# for; anything that is merely interesting belongs on a dashboard instead.
+groups:
+  - name: ecommerce-api
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+            / sum(rate(http_requests_total[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: "Over 5% of requests are failing"
+          description: "5xx rate is {{ $value | humanizePercentage }} over the last 5 minutes."
+
+      - alert: CheckoutLatencyHigh
+        expr: |
+          histogram_quantile(
+            0.99,
+            sum by (le) (rate(http_request_duration_seconds_bucket{route="/api/v1/orders"}[5m]))
+          ) > 2
+        for: 10m
+        labels:
+          severity: page
+        annotations:
+          summary: "Checkout p99 above 2s"
+          description: >-
+            p99 is {{ $value }}s. If p50 is unchanged, suspect row-lock
+            contention on hot product variants (ADR-0001).
+
+      - alert: DatabasePoolSaturated
+        expr: |
+          db_pool_connections{state="in_use"}
+            / clamp_min(
+                db_pool_connections{state="in_use"} + db_pool_connections{state="available"},
+                1
+              ) > 0.9
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: "Connection pool over 90% utilised on {{ $labels.pool }}"
+          description: "Requests will start queueing on connection checkout."
+
+      - alert: CheckoutFailureSpike
+        expr: sum by (reason) (rate(order_placement_failures_total[10m])) > 0.5
+        for: 10m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "Checkout rejections rising: {{ $labels.reason }}"
+          description: >-
+            insufficient_stock means inventory; coupon_invalid usually means a
+            broken campaign; address_not_found suggests a client bug.
+
+      - alert: IdempotentReplaySpike
+        expr: rate(idempotent_replays_total[10m]) > 0.2
+        for: 10m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "Clients are retrying checkout unusually often"
+          description: >-
+            Replays mean clients gave up before we responded. Correctness is
+            protected, but this is a latency problem wearing a correctness hat.
+
+      - alert: AuthBruteForceSuspected
+        expr: sum(rate(rate_limit_rejections_total[5m])) > 1
+        for: 5m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "Sustained rate-limit rejections on auth endpoints"
+          description: "Check source IPs and targeted accounts before relaxing limits."
+
+      - alert: CacheErrorRateHigh
+        expr: |
+          sum(rate(cache_operations_total{outcome="error"}[5m]))
+            / clamp_min(sum(rate(cache_operations_total[5m])), 0.001) > 0.1
+        for: 10m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "Redis is failing more than 10% of cache operations"
+          description: >-
+            The API degrades to direct database reads, so this is not
+            customer-facing yet — but database load is now higher than planned.

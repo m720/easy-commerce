@@ -7,7 +7,10 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from app.database.base import Base
-from app.models import user, category, tag, product, review, wishlist, coupon, address, cart, order  # noqa: F401
+from app.models import (  # noqa: F401
+    user, category, tag, product, review, wishlist, coupon, address, cart, order,
+    audit, idempotency,
+)
 from app.config import settings
 
 config = context.config

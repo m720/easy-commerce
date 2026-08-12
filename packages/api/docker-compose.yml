@@ -17,6 +17,22 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Cache only: no persistence, and an LRU policy so a full instance evicts
+    # rather than refusing writes. Nothing here is a source of truth.
+    command: >-
+      redis-server --save "" --appendonly no
+      --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   migrate:
     build: .
     command: alembic upgrade head
@@ -38,11 +54,14 @@ services:
       - .env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-ecommerce}
+      REDIS_URL: redis://redis:6379/0
     depends_on:
       db:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
+      redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
       interval: 10s
@@ -50,5 +69,39 @@ services:
       retries: 5
       start_period: 10s
 
+  # Monitoring stack. Opt-in so the default `docker-compose up` stays light:
+  #   docker-compose --profile monitoring up
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    profiles: ["monitoring"]
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./ops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./ops/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      - api
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    profiles: ["monitoring"]
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./ops/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./ops/grafana/dashboards:/etc/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
 volumes:
   postgres_data:
+  prometheus_data:
+  grafana_data:
