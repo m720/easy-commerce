@@ -2,11 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
-from app.dependencies import get_db, require_admin, Pagination
+from app.dependencies import get_db, require_admin, admin_audit, Pagination
 from app.models.user import User
 from app.models.wishlist import Wishlist, WishlistItem
 from app.schemas.auth import UserResponse
 from app.schemas.user import UserActivitySummary
+from app.services.audit_service import AuditAction, AuditContext
 
 router = APIRouter(prefix="/users", tags=["Users (Admin)"])
 
@@ -29,24 +30,42 @@ def get_user(user_id: UUID, db: Session = Depends(get_db), _=Depends(require_adm
 
 
 @router.patch("/{user_id}/activate", response_model=UserResponse)
-def activate_user(user_id: UUID, db: Session = Depends(get_db), _=Depends(require_admin)):
+def activate_user(user_id: UUID, db: Session = Depends(get_db), audit: AuditContext = Depends(admin_audit)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    was_active = user.is_active
     user.is_active = True
     db.commit()
     db.refresh(user)
+    audit.record(
+        db,
+        action=AuditAction.USER_ACTIVATED,
+        entity_type="user",
+        entity_id=user.id,
+        entity_label=user.email,
+        changes={"is_active": {"before": was_active, "after": user.is_active}},
+    )
     return user
 
 
 @router.patch("/{user_id}/deactivate", response_model=UserResponse)
-def deactivate_user(user_id: UUID, db: Session = Depends(get_db), _=Depends(require_admin)):
+def deactivate_user(user_id: UUID, db: Session = Depends(get_db), audit: AuditContext = Depends(admin_audit)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    was_active = user.is_active
     user.is_active = False
     db.commit()
     db.refresh(user)
+    audit.record(
+        db,
+        action=AuditAction.USER_DEACTIVATED,
+        entity_type="user",
+        entity_id=user.id,
+        entity_label=user.email,
+        changes={"is_active": {"before": was_active, "after": user.is_active}},
+    )
     return user
 
 

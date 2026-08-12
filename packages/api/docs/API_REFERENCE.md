@@ -833,16 +833,36 @@ Cart
 
 Atomic: locks stock, applies coupon, decrements inventory, clears cart, sends email.
 
+**Always send an `Idempotency-Key`.** Without it, a network retry places a
+second order. With it, the retry returns the original order and nothing is
+written twice.
+
 ```ts
+// Headers
+Authorization: Bearer <token>
+Idempotency-Key: <uuid>   // generate once per checkout attempt, reuse on retry
+
 // Request
 { address_id: UUID; coupon_code?: string }
 
 // Response 201
 Order
+// Response header: Idempotency-Replayed: "true" | "false"
 
-// Errors 400: empty cart | insufficient stock | invalid coupon
+// Errors 400: empty cart | insufficient stock | invalid coupon | malformed key
 // Errors 404: address not found
+// Errors 409: a request with this key is still in flight — back off and retry
+// Errors 422: this key was already used with a different request body
 ```
+
+Client rules:
+
+* Generate the key **once per checkout attempt** and reuse it for every retry
+  of that attempt. Generating a fresh key per retry defeats the mechanism.
+* Generate a **new** key when the user genuinely starts a new order.
+* On `409`, wait for `Retry-After` seconds and retry with the same key.
+* On `422`, the key was reused with different content — a client bug. Start a
+  new attempt with a new key.
 
 #### `GET /orders` — My orders  🔒 User
 ```ts
@@ -1041,7 +1061,9 @@ Common status codes:
 2. POST /coupons/validate            — optional: preview discount
 3. GET  /addresses                   — let user pick address
 4. POST /orders  { address_id, coupon_code? }
+       header: Idempotency-Key: <uuid generated for this attempt>
 5. → order confirmed, cart cleared, email sent
+   (a retry with the same key returns the same order — no double charge)
 ```
 
 ### Product listing / filtering
@@ -1064,3 +1086,104 @@ GET /products?search=shoes&category_id=2&min_price=20&max_price=100&tag_id=5&ski
 2. POST /auth/login  ← store access_token
 3. All subsequent requests: Authorization: Bearer <token>
 ```
+
+
+---
+
+## Operational endpoints
+
+Not part of `/api/v1`; served from the API root.
+
+#### `GET /health` — Liveness  🌐
+
+Dependency-free. Returns `{"status": "ok"}` whenever the process is up.
+
+#### `GET /health/ready` — Readiness  🌐
+
+```ts
+// Response 200 (ready) or 503 (not ready)
+{
+  status: "ready" | "not_ready",
+  checks: { database: string, cache: string }
+}
+```
+
+A failing cache is reported as `degraded` but does not make the instance
+unready — the API serves fine without Redis.
+
+#### `GET /metrics` — Prometheus scrape  🌐
+
+Prometheus text exposition format. Intended for the internal network; block it
+at the ingress in production.
+
+---
+
+## Request tracing
+
+Every response carries `X-Request-ID`. Send your own to join a trace across
+services:
+
+```
+X-Request-ID: <id>   // optional on request; always present on the response
+```
+
+Include it in bug reports — it retrieves the entire server-side chain for that
+request, including the audit entry if the request changed something.
+
+---
+
+## Audit log  🔒 Admin
+
+#### `GET /audit-logs` — List admin actions
+
+```ts
+// Query params (all optional)
+{
+  action?: string       // e.g. "product.updated", "return.approved"
+  entity_type?: string  // "product" | "product_variant" | "coupon" | "order" | ...
+  entity_id?: string
+  actor_user_id?: UUID
+  from_date?: string    // YYYY-MM-DD
+  to_date?: string
+  skip?: number
+  limit?: number
+}
+
+// Response 200
+Array<{
+  id: UUID
+  actor_user_id: UUID | null
+  actor_email: string | null
+  action: string
+  entity_type: string
+  entity_id: string | null
+  entity_label: string | null
+  changes: Record<string, { before: unknown; after: unknown }> | null
+  request_id: string | null
+  ip_address: string | null
+  created_at: string
+}>
+```
+
+Read-only: entries cannot be edited or deleted through the API.
+
+Recorded actions: `product.created`, `product.updated`, `product.deleted`,
+`product.featured_toggled`, `product.bulk_activation`, `variant.created`,
+`variant.updated`, `variant.deleted`, `coupon.created`, `coupon.updated`,
+`coupon.deleted`, `order.status_changed`, `return.approved`, `return.rejected`,
+`user.activated`, `user.deactivated`.
+
+---
+
+## Rate limits
+
+Authentication endpoints are capped per IP **and** per account.
+
+| Endpoint | Default budget |
+|---|---|
+| `POST /auth/login` | 10 attempts / 5 min |
+| `POST /auth/register` | 5 / hour |
+| `PUT /auth/me/password` | 10 / 5 min |
+
+Exceeding a budget returns `429` with a `Retry-After` header (seconds). Treat
+it as backoff, not as a failed login.

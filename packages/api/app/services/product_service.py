@@ -131,10 +131,15 @@ def create_variant(product_id: UUID, data: ProductVariantCreate, db: Session) ->
     return variant
 
 
-def update_variant(variant_id: UUID, data: ProductVariantUpdate, db: Session) -> ProductVariant:
+def get_variant_or_404(variant_id: UUID, db: Session) -> ProductVariant:
     variant = db.query(ProductVariant).filter(ProductVariant.id == variant_id).first()
     if not variant:
         raise HTTPException(status_code=404, detail="Variant not found")
+    return variant
+
+
+def update_variant(variant_id: UUID, data: ProductVariantUpdate, db: Session) -> ProductVariant:
+    variant = get_variant_or_404(variant_id, db)
     update_data = data.model_dump(exclude_unset=True)
     if "sku" in update_data and update_data["sku"] != variant.sku:
         if db.query(ProductVariant).filter(ProductVariant.sku == update_data["sku"]).first():
@@ -147,8 +152,6 @@ def update_variant(variant_id: UUID, data: ProductVariantUpdate, db: Session) ->
 
 
 def delete_variant(variant_id: UUID, db: Session) -> None:
-    variant = db.query(ProductVariant).filter(ProductVariant.id == variant_id).first()
-    if not variant:
-        raise HTTPException(status_code=404, detail="Variant not found")
+    variant = get_variant_or_404(variant_id, db)
     db.delete(variant)
     db.commit()

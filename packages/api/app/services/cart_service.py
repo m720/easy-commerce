@@ -78,6 +78,13 @@ def remove_item(user_id: UUID, item_id: UUID, db: Session) -> None:
     db.commit()
 
 
-def clear_cart(cart: Cart, db: Session) -> None:
+def clear_cart(cart: Cart, db: Session, commit: bool = True) -> None:
+    """Empty a cart.
+
+    ``commit=False`` lets checkout fold the cart clear into the same
+    transaction as the order write and stock decrement, so the whole thing
+    commits or aborts as a unit and the FOR UPDATE locks are held to the end.
+    """
     db.query(CartItem).filter(CartItem.cart_id == cart.id).delete()
-    db.commit()
+    if commit:
+        db.commit()
